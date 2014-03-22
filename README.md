@@ -1,4 +1,5 @@
-ArtificialIntelligence
-======================
+College Homework and Laboratory Work
+========================================
 
-AI Homework
+This repository contains homework and work done at laboratories of the University of Bucharest.
+
