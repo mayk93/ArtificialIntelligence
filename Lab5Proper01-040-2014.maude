@@ -1,0 +1,113 @@
+*** Mandrescu Mihai Petru, 242
+*** Exercitiul 3, Laboratorul 4
+
+fmod SET{X :: TRIV} is
+
+    sort Set{X} .
+    sort NeSet{X} .
+    subsort X$Elt < NeSet{X} .
+    subsort NeSet{X} < Set{X} .
+    op vid : -> Set{X} .
+    op _ _ : Set{X} Set{X} -> Set{X} [assoc comm id: vid] .        
+    var X : X$Elt .
+    eq X X = X .
+        
+endfm
+
+view TRIV-TO-INT from TRIV to INT is
+
+    sort Elt to Int .
+
+endv    
+
+fmod SET-INT is
+
+    protecting SET{TRIV-TO-INT} .
+
+endfm
+
+*** Teorie pentru multimi total ordonate.
+
+fth TOSET is
+ 
+    including TRIV .
+    including BOOL .
+
+    op _<=_ : Elt Elt -> Bool .
+
+    vars A B C : Elt .
+
+    eq A <= A = true .
+    ceq A <= C = true if (A <= B and B <= C) [nonexec label reflex] .
+    ceq A = B if ( A <= B and B <= A) [nonexec label antisym] .
+    ceq B = C if ( not(A <= B) and not (B <= A) ) [nonexec label total] .
+    
+endfth
+
+*** Sortul Elt este mapat automat.
+*** De aceea lasam view-ul gol.
+*** Acest view este de la o teorie la o teorie.
+*** Este necesar sa facem inca un view, de la TOSET la INT.
+*** Motivul va fi explicat mai jos.
+
+view TRIV-TO-TOSET from TRIV to TOSET is
+
+endv
+
+*** Trebuie sa mappam Elt la un sort din INT
+*** Maparea operatiei <= ( din TOSET ) se face automat, intrucat <= se gaseste
+*** si in Int, cu acelasi nume.
+
+view TOSET-TO-INT from TOSET to INT is
+
+    sort Elt to Int .
+
+endv
+
+*** fmod SET{X :: TRIV-TO-TOSET} nu ar functiona, deoarece este un view
+*** de la teorie la teorie si parametrizarea s-ar pastra in teorie.
+*** Facand doua view-uri si instantiindule succesiv, inasprim
+*** conditiile necesare. Inainte, elementele puteau sa fie oarecare.
+*** Acum, pot fi oarecare cu conditia sa vina dintr-o multime total ordonata.
+
+fmod SET-TOSET is
+
+    protecting SET{TRIV-TO-TOSET}{TOSET-TO-INT} . 
+
+endfm
+
+fmod SET-MAX{X :: TOSET} is
+
+    protecting SET{TRIV-TO-TOSET}{X} .
+
+    op maxim : NeSet{TRIV-TO-TOSET}{X} -> X$Elt .
+
+    var L : Set{TRIV-TO-TOSET}{X} .
+    var X : X$Elt .
+    
+    eq maxim(X) = X . 
+    ceq maxim(X L) = X if maxim(L) <= X .
+    eq maxim(X L) = maxim(L) [owise] .
+    
+*** owise vine de la otherwise.    
+*** ceq maxim(X L) = X if X <= maxim(L) .
+
+endfm
+
+fmod INT-SET-MAX is
+
+    protecting SET-MAX{TOSET-TO-INT}.
+
+endfm
+
+view TOSET-TO-STRING from TOSET to STRING is
+
+    sort Elt to String .
+
+endv
+
+fmod STRING-SET-MAX is
+
+    protecting SET-MAX{TOSET-TO-STRING}.
+
+endfm

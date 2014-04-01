@@ -1,0 +1,52 @@
+fth TOSET is
+ 
+    including TRIV .
+    including BOOL .
+
+    op _<=_ : Elt Elt -> Bool .
+
+    vars A B C : Elt .
+
+    eq A <= A = true .
+    ceq A <= C = true if (A <= B and B <= C) [nonexec label reflex] .
+    ceq A = B if ( A <= B and B <= A) [nonexec label antisym] .
+    ceq B = C if ( not(A <= B) and not (B <= A) ) [nonexec label total] .
+    
+endfth
+
+fmod LIST{X :: TOSET} is
+    
+    sort List{X} .
+    subsort X$Elt < List{X} .
+
+    op nil : -> List{X} .
+    op _ _ : X$Elt List{X} -> List{X} [assoc id: nil] .
+
+endfm
+
+fmod LENGTH{X :: TOSET} is
+
+    protecting LIST{X} .
+    protecting NAT .
+
+    op length : List{X} -> Nat .
+
+    var I : X$Elt .
+    var L : List{X} .
+
+    eq length(nil) = 0 .
+    eq length(I L) = 1 + length(L) .
+
+endfm
+
+view TOSET-TO-INT from TOSET to INT is
+
+    sort Elt to Int .
+
+endv
+
+fmod LTTI is
+
+    protecting LENGTH{TOSET-TO-INT} .
+
+endfm
