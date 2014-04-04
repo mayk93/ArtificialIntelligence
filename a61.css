@@ -1,0 +1,41 @@
+#pageTitle
+{   
+    text-align:center;
+    color:black;
+}
+
+#pageTitle:hover
+{
+    box-shadow: 0px 0px 5px green;
+}
+
+#div1ID
+{
+    position:absolute;
+    left:100px;
+    top:100px;
+    border-style:solid;
+    border-width:thin;
+    border-color:black;
+}
+
+#div1ID:hover
+{
+    box-shadow: 0px 0px 5px green;
+}
+
+#textInput
+{
+    background-color : lightgray;
+}
+
+#textArea
+{
+    background-color : white;
+    resize: none;
+}
+
+#inputButton
+{
+    width:45%;
+}
