@@ -1,0 +1,44 @@
+***  Mandrescu Mihai Petru, 242
+*** Test attempt at Lab 6, Logical Programming.
+
+fmod testList{X :: testSET} is
+
+    sort List{X} .
+
+    subsort X$Elt < List{X} .
+
+    op nil : -> List{X} .
+
+    op _ _ : List{X} List{X} -> List{X} [assoc id: nil] .
+
+    op _<<<_ : List{X} List{X} -> Bool . 
+
+    var I : X$Elt . var L : List{X} .
+endfm
+
+*** Set theory, comparison rules.
+
+fth testTOSET is
+ 
+    protecting TRIV .
+    protecting Bool .
+
+    op _<=_ : Elt Elt -> Bool .
+
+    vars A, B, C : Elt .
+
+    eq A <= A = true .
+    ceq A <= C = true if (A <= B and B <= C) [nonexec] .
+    ceq A = B if ( A <= B and B <= A) [nonexec] .
+    ceq B = C if ( not(A <= B) and not (B <= A) ) [nonexec] .
+    
+endfth
+
+*** The view.
+
+view testIntSet from TOSET to INT is
+
+    including TRIV.
+	sort Elt to Int .
+	
+endv

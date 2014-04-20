@@ -1,0 +1,72 @@
+*** Mandrescu Mihai Petru, 242
+*** Logical Programming, Laboratory 6, Exercise 1.
+*** This is individual work.
+
+*** Here we define an integer list.
+*** LINT stands for List Integer.
+
+fmod LINT is
+
+*** This means LINT extends the core INT module.
+    protecting INT .
+*** NL and L are sorts used to distinguish between Non-empty lists and lists in
+*** general.
+    sorts NL L .
+*** Here we define the relationship between them.
+*** An integer is a non-empty list because we consider an integer to be a
+*** one element list and a non-empty list is a special kind of list.
+    subsort Int < NL < L .
+*** Here we define nil, that returns a list.
+    op nil : -> L .
+*** Here we define the inductive process through which Lists are constructed.
+*** It means and Int followed by "," and a list 
+*** be it empty, integer or a proper list, returns a list about which we know for
+*** sure to be not-empty.
+    op _,_ : Int L -> NL [assoc id: nil] .
+
+endfm
+
+*** Now that we have a specific list as a model, we can start defining a
+*** parametrized module.
+*** First, we need a theory. We shall use the predefined TRIV:
+
+*** The module GENERICLIST takes a parameter X.
+*** This means X respects the TRIV theory, or structure.
+*** Later, we shall define a view from TRIV to INT, that will allow us
+*** to specify how a TRIV element, like X, can satisfy, or act like an
+*** integer. 
+fmod GENERICLIST{X :: TRIV} is
+    
+*** L as in List is a sort of GENERICLIST.
+*** The same way we had non-empty and lists above.    
+    sort L{X} .
+*** X is like Elt, the one element of TRIV. So an "Elt-like X"
+*** is a subsort of a list.
+*** The same way an integer was the subsort of non-empty list.
+    subsort X$Elt < L{X} .
+*** Nil, as above.
+    op nil : -> L{X} .
+*** As opposed to what we did above, we can now construct lists by attaching
+*** one list to another.    
+    op _,_ : L{X} L{X} -> L{X} [assoc id: nil] .
+    
+endfm
+
+*** Theory TRIV is built-in, so we didn't have to write it.
+*** However, we still need to provide a view.
+
+*** TIV as in Triv to Int view.
+*** Operations such as "<" map automatically.
+view TIV from TRIV to INT is
+
+    sort Elt to Int .
+
+endv
+
+*** LISINT is equivalent too LINT.
+
+fmod LISINT is
+
+    protecting GENERICLIST{Int} .
+
+endfm

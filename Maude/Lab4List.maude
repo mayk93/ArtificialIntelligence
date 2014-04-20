@@ -1,0 +1,100 @@
+*** Mandrescu Mihai Petru, 242
+
+*** This is a generic list module, properly called a parametrized module.
+*** The LIST module needs a parameter X that describes the type of
+*** elements it takes. ( Something in the likes of vector<int> in C++. 
+*** X would be int )
+*** A type in this context means the rules the parameter must respect.
+*** These rules are defined in a theory.
+*** For this example, the theory is TRIV. It is not explicitly defined since
+*** it is built in.
+
+
+fmod LIST{X :: TRIV} is
+
+    sort List{X} .
+    subsort X$Elt < List{X} .
+
+    op nil : -> List{X} .
+    op _ _ : List{X} List{X} -> List{X} [assoc id: nil] .
+
+endfm
+
+*** This is a view.
+*** A view has the role of "interpreting" elements.
+*** The view provides the rules necessary to satisfy the theory.
+*** For example, the Int view specifies how Elt sorts in the TRIV theory
+*** are translated to Int. 
+
+view Int from TRIV to INT is
+
+    sort Elt to Int .
+
+endv
+
+*** This is an extension of the TRIV theory.
+*** TRIV# adds another operation to the TRIV theory.
+*** Operation # is a prefix operation, taking one element and
+*** doing something to it.
+
+fth TRIV# is
+
+    including TRIV .
+
+    op #_ : Elt -> Elt .
+
+endfth
+
+*** This is another parametrized module.
+*** It can take parameters of type TRIV#.
+*** It also provides an operation apply# that applies the # operation on
+*** all elements of the list.
+*** The way apply# functions is described here, however, it's behavior
+*** is defined in a view, for each type separately.
+*** In other words, no matter what # does to an element, it will leave
+*** nill unchanged and will be applied recursively on each element.
+
+fmod LIST#{X :: TRIV#} is
+
+    sort List{X} .
+
+    subsort X$Elt < List{X} .
+
+    op nil : -> List{X} .
+
+    op _ _ : List{X} List{X} -> List{X} [assoc id: nil] .
+
+    op apply# : List{X} -> List{X} .
+
+    var I : X$Elt . var L : List{X} .
+
+    eq apply#(nil) = nil .
+
+    eq apply#(I L) = (# I) apply#(L) .
+
+endfm
+
+*** Here we define how the # operation will behave for an Int.
+*** The # operation for Int behaves as the - operation.
+*** To better understand, we could define a view for
+*** Bool that would negate the input.
+
+view MyInt# from TRIV# to INT is
+
+    sort Elt to Int .
+
+    op #_ to -_ .
+
+endv
+
+*** Here is another rule for #.
+*** According to this view, applying # to a list
+*** will make every element be multiplied by 2.
+
+view MyInt#2 from TRIV# to INT is
+
+    sort Elt to Int .
+
+    op # X:Elt to term (X:Int + 2) .
+
+endv
