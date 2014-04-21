@@ -1,11 +1,11 @@
 window.onload = myMain;
 
-function myMain() 
+function myMain()
 {
-    var user        = document.getElementById("inputBox").value;
-    var button      = document.getElementById("inputButton");
+    var user = document.getElementById("inputBox").value;
+    var button = document.getElementById("inputButton");
     
-    button.onclick  = function(){startGame(user);}    
+    button.onclick = function(){startGame(user);}
 }
 
 function getTurn(turnAsNumber)
@@ -41,11 +41,11 @@ function startGame(user)
         var currentButton = document.getElementById(id);
         currentButton.disabled = false;
         currentButton.onclick = function(){mark(this.id);}
-    }       
+    }
 }
 
 function someoneWon()
-{ 
+{
     if
     (
     (document.getElementById("gameButton0").innerHTML != "")
@@ -148,7 +148,7 @@ function someoneWon()
     
     if
     (
-    (document.getElementById("gameButton3").innerHTML != "")
+    (document.getElementById("gameButton2").innerHTML != "")
     &&
     (document.getElementById("gameButton5").innerHTML != "")
     &&
@@ -157,7 +157,7 @@ function someoneWon()
     {
         if
         ((
-        (document.getElementById("gameButton3").innerHTML == document.getElementById("gameButton5").innerHTML)
+        (document.getElementById("gameButton2").innerHTML == document.getElementById("gameButton5").innerHTML)
         &&
         (document.getElementById("gameButton5").innerHTML == document.getElementById("gameButton8").innerHTML)
         ))
@@ -204,9 +204,9 @@ function someoneWon()
         {
             return true;
         }
-    }                    
+    }
     
-    return false;     
+    return false;
 }
 
 function allDisabled()
@@ -224,7 +224,7 @@ function allDisabled()
     if(numberOfDisabledButtons == 9)
     {
         return true;
-    } 
+    }
     
     return false;
 }
@@ -234,7 +234,7 @@ function disableAll()
     for(var i = 0; i<= 8; i++)
     {
         document.getElementById("gameButton" + i).disabled = true;
-    } 
+    }
 }
 
 function update(turnAsNumber)
@@ -245,7 +245,7 @@ function update(turnAsNumber)
     if(someoneWon() == true)
     {
         disableAll();
-        $('#turnParagraph').text("We have a winner: " + turnAsString);
+        $('#turnParagraph').text("We have a winner: " + getTurn(turnAsNumber+1));
     }
     else
     {
