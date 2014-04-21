@@ -221,7 +221,7 @@ function allDisabled()
         }
     }
     
-    if(numberOfDisabledButtons == 8)
+    if(numberOfDisabledButtons == 9)
     {
         return true;
     } 
@@ -260,8 +260,9 @@ function mark(id)
 {
     turnAsString = getTurn(turnAsNumber);
     turnAsNumber++;
-    update(turnAsNumber);
 
     document.getElementById(id).innerHTML = turnAsString;
     document.getElementById(id).disabled = true;
+    
+    update(turnAsNumber);
 }
