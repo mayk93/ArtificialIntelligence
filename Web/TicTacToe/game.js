@@ -66,40 +66,175 @@ function someoneWon()
         }
     }
     
+    if
+    (
+    (document.getElementById("gameButton3").innerHTML != "")
+    &&
+    (document.getElementById("gameButton4").innerHTML != "")
+    &&
+    (document.getElementById("gameButton5").innerHTML != "")
+    )
+    {
+        if
+        ((
+        (document.getElementById("gameButton3").innerHTML == document.getElementById("gameButton4").innerHTML)
+        &&
+        (document.getElementById("gameButton4").innerHTML == document.getElementById("gameButton5").innerHTML)
+        ))
+        {
+            return true;
+        }
+    }
+    
+    if
+    (
+    (document.getElementById("gameButton6").innerHTML != "")
+    &&
+    (document.getElementById("gameButton7").innerHTML != "")
+    &&
+    (document.getElementById("gameButton8").innerHTML != "")
+    )
+    {
+        if
+        ((
+        (document.getElementById("gameButton6").innerHTML == document.getElementById("gameButton7").innerHTML)
+        &&
+        (document.getElementById("gameButton7").innerHTML == document.getElementById("gameButton8").innerHTML)
+        ))
+        {
+            return true;
+        }
+    }
+    
+    if
+    (
+    (document.getElementById("gameButton0").innerHTML != "")
+    &&
+    (document.getElementById("gameButton3").innerHTML != "")
+    &&
+    (document.getElementById("gameButton6").innerHTML != "")
+    )
+    {
+        if
+        ((
+        (document.getElementById("gameButton0").innerHTML == document.getElementById("gameButton3").innerHTML)
+        &&
+        (document.getElementById("gameButton3").innerHTML == document.getElementById("gameButton6").innerHTML)
+        ))
+        {
+            return true;
+        }
+    }
+    
+    if
+    (
+    (document.getElementById("gameButton1").innerHTML != "")
+    &&
+    (document.getElementById("gameButton4").innerHTML != "")
+    &&
+    (document.getElementById("gameButton7").innerHTML != "")
+    )
+    {
+        if
+        ((
+        (document.getElementById("gameButton1").innerHTML == document.getElementById("gameButton4").innerHTML)
+        &&
+        (document.getElementById("gameButton4").innerHTML == document.getElementById("gameButton7").innerHTML)
+        ))
+        {
+            return true;
+        }
+    }
+    
+    if
+    (
+    (document.getElementById("gameButton3").innerHTML != "")
+    &&
+    (document.getElementById("gameButton5").innerHTML != "")
+    &&
+    (document.getElementById("gameButton8").innerHTML != "")
+    )
+    {
+        if
+        ((
+        (document.getElementById("gameButton3").innerHTML == document.getElementById("gameButton5").innerHTML)
+        &&
+        (document.getElementById("gameButton5").innerHTML == document.getElementById("gameButton8").innerHTML)
+        ))
+        {
+            return true;
+        }
+    }
+    
+    if
+    (
+    (document.getElementById("gameButton0").innerHTML != "")
+    &&
+    (document.getElementById("gameButton4").innerHTML != "")
+    &&
+    (document.getElementById("gameButton8").innerHTML != "")
+    )
+    {
+        if
+        ((
+        (document.getElementById("gameButton0").innerHTML == document.getElementById("gameButton4").innerHTML)
+        &&
+        (document.getElementById("gameButton4").innerHTML == document.getElementById("gameButton8").innerHTML)
+        ))
+        {
+            return true;
+        }
+    }
+    
+    if
+    (
+    (document.getElementById("gameButton2").innerHTML != "")
+    &&
+    (document.getElementById("gameButton4").innerHTML != "")
+    &&
+    (document.getElementById("gameButton6").innerHTML != "")
+    )
+    {
+        if
+        ((
+        (document.getElementById("gameButton2").innerHTML == document.getElementById("gameButton4").innerHTML)
+        &&
+        (document.getElementById("gameButton4").innerHTML == document.getElementById("gameButton6").innerHTML)
+        ))
+        {
+            return true;
+        }
+    }                    
+    
     return false;     
 }
 
 function allDisabled()
 {
-    /*
     var numberOfDisabledButtons = 0;
     for(var i = 0; i <= 8; i++)
     {
         var id = "gameButton" + i;
-        if(document.getElementById(id).disabled == true;)
+        if(document.getElementById(id).disabled == true)
         {
             numberOfDisabledButtons++;
         }
     }
     
-    if(numberOfDisabledButtons == 9)
+    if(numberOfDisabledButtons == 8)
     {
         return true;
-    }
-    */  
+    } 
     
     return false;
 }
 
 function disableAll()
 {
-    /*
-    for(var i = 0; i <= 8; i++)
+    for(var i = 0; i<= 8; i++)
     {
-        var id = "gameButton" + i;
-        document.getElementById(id).disabled = true;
-    }
-    */   
+        document.getElementById("gameButton" + i).disabled = true;
+    } 
 }
 
 function update(turnAsNumber)
@@ -110,12 +245,14 @@ function update(turnAsNumber)
     if(someoneWon() == true)
     {
         disableAll();
-        $('#turnParagraph').text("We have a winner.");
+        $('#turnParagraph').text("We have a winner: " + turnAsString);
     }
-    
-    if(allDisabled() == true)
+    else
     {
+        if(allDisabled() == true)
+        {
         $('#turnParagraph').text("Draw.");
+        }
     }
 }
 
