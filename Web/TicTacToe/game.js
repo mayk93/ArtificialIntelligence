@@ -237,10 +237,29 @@ function disableAll()
     }
 }
 
+function choose()
+{
+    var randomChoice =  Math.floor((Math.random()*8)+1);
+    var chosenButton = document.getElementById("gameButton" + randomChoice);
+    
+    while(chosenButton.disabled == true)
+    {
+        randomChoice = Math.floor((Math.random()*8)+1);
+        chosenButton = document.getElementById("gameButton" + randomChoice);        
+    }
+    
+    chosenButton.onclick();
+}
+
 function update(turnAsNumber)
 {
     var turnAsString = getTurn(turnAsNumber);
     $('#turnParagraph').text("Turn for: " + turnAsString);
+    
+    if(turnAsNumber%2 == 1)
+    {
+        choose();
+    }
     
     if(someoneWon() == true)
     {
