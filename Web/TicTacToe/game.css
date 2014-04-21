@@ -1,0 +1,174 @@
+#titleDiv
+{
+    height: auto;
+    width: 100%;
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+    border-style:double;
+    border-color:black;
+    
+    background-color: rgb(200,200,200);
+}
+
+#titleParagraph
+{
+    text-align:center;
+    
+    height: 100%;
+    width: 100%;
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+    background-color: white;
+}
+
+#gameDiv
+{
+    height: auto;
+    width: 100%;
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+    border-style:double;
+    border-color:black;
+}
+
+#buttonDiv
+{
+    text-align:center;
+    
+    height: 15%;
+    width: 15%;
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+    border-style:solid;
+    border-width:2px;
+    border-color:black;    
+    
+    background-color: rgb(200,200,200);
+    
+    padding: 0.5%;     
+}
+
+.gameButtonClass
+{
+    width: 5em;
+    height: 5em;
+}
+
+#turnDiv
+{
+    height: auto;
+    width: 100%;
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+    border-style:double;
+    border-color:black;
+    
+    background-color: rgb(200,200,200);
+}
+
+#turnParagraph
+{
+    text-align:center;
+    
+    height: auto;
+    width: 100%;
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+    background-color: white;    
+}
+
+#inputDiv
+{
+    height: auto;
+    width: 100%;
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+    border-style:double;
+    border-color:black;
+    
+    background-color: white;
+}
+
+#inputForm
+{
+    text-align:center;
+    
+    height: auto;
+    width: 100%;
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    
+    background-color: rgb(200,200,200);
+}
+
+#inputParagraph
+{
+    text-align:center;
+    
+    height: auto;
+    width: 100%;
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+    background-color: rgb(200,200,200);    
+}
+
+#inputBox
+{
+    width: 15em;
+    height: 3em;
+    margin: 1%;
+    
+    text-align: center; 
+}
+
+#inputButton
+{
+    width: 15em;
+    height: 3em;
+    margin: 1%;
+    
+    text-align: center;
+}
+
+#outputDiv
+{
+    height: auto;
+    width: 100%;
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+    border-style:double;
+    border-color:black;
+    
+    background-color: white;
+}
