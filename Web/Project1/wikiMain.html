@@ -1,0 +1,51 @@
+<!DOCTYPE html> 
+<html lang="en">
+
+<head>
+    <link href="wikiMain.css" type="text/css" rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="wikiMain.js" type="text/javascript"></script>
+    
+    <script src = "//cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/fullcalendar.min.js"></script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/fullcalendar.css" type="text/css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/fullcalendar.print.css" type="text/css" rel="stylesheet">
+    
+    <title>UniBucPedia</title>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <div id="mainDiv">
+        <div id="titleDiv">
+        <p id="titleParagraph">The University of Bucharest Wikipedia - BETA</p>
+        </div>
+        
+        <div id="bodyDiv">
+            <div id="articleDiv">
+                <iframe id="featuredArticleIframe" src="featuredArticle0.html" frameborder="0"></iframe> 
+            </div>
+            
+            <div id="navigationDiv">
+                <button id="navButton" type="button">Navigation:<br></button>
+                <nav id="navMenu">
+                    <a id="historyLink" href="#">History</a><br>
+                    <a id="palaceLink" href="#">Palace of the University</a><br>
+                    <a id="lawLink" href="#">The Faculty of Law</a><br>
+                    <a id="cultureLink" href="#">Culture</a><br>
+                    <a id="randomLink" href="#">Random Article</a>
+                </nav>
+                <p id="featuredArticleParagraph">Featured Article:<br></p>
+                <a id="returnToFA" href=""><p id="featuredArticle">Click Here</p></a>
+                <p id="featuredPictureParagraph">Featured Pictures:<br></p>
+                <br>
+                
+            </div>            
+        </div>
+        
+        <footer id="mainWikiFooter">
+        This site and all accompanying java script is free and open source software.
+        <br>
+        It is licensed under the terms of the GNU GPL license.
+        </footer>        
+    </div>
+</body>

@@ -1,0 +1,140 @@
+html
+{
+    background-color: black;
+    overflow: hidden;
+}
+
+body
+{
+    background-color: black;
+    overflow: hidden;
+}
+
+#mainDiv
+{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+
+    margin: auto;
+    
+    background-color: black;
+    
+    overflow: hidden;   
+}
+
+#titleDiv
+{
+    position: absolute;
+    height: 10%;
+    width: 100%;
+    
+    margin: auto;
+    
+    text-align: center;
+    
+    border-style: solid;
+    border-color: white;
+}
+
+#bodyDiv
+{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    
+    margin: auto;
+    
+    text-align: center;
+    
+    border-style: solid;
+    border-color: white;    
+}
+
+#titleParagraph
+{
+    color: white;
+}
+
+#navigationDiv
+{
+    position: absolute;
+    height: 77%;
+    width: 20%;
+    
+    top: 10%;
+    
+    margin: auto;
+    
+    text-align: center;
+    
+    border-style: solid;
+    border-color: white;
+    
+    color: white;
+}
+
+#articleDiv
+{
+    position: absolute;
+    height: 77%;
+    width: 100%;
+    
+    top: 10%;
+    
+    margin: auto;
+    
+    text-align: center;
+    
+    border-style: solid;
+    border-color: white;
+}
+
+#featuredArticleIframe
+{
+    width: 79.5%;
+    height: 100%;
+    float: right;
+}
+
+#featuredPicture
+{
+    width: 70%;
+    height: 50%;
+}
+
+#optionalFeaturedPicture
+{
+    width: 70%;
+    height: 20%;
+}
+
+#mainWikiFooter
+{
+    position: absolute;
+    height: 10%;
+    width: 100%;
+    
+    bottom: 1%;
+    margin: auto;
+    
+    text-align: center;
+    
+    border-style: solid;
+    border-color: white;
+    
+    color: white;
+}
+
+#navButton
+{
+    background: url(buttonSkin.png);
+    width: 25%;
+    height: 5%;
+    color: white;
+}
+
+a:link {color: #C0C0C0;}      /* unvisited link */
+a:visited {color: #808080;}  /* visited link */
+a:hover {color: #ADD8E6;}  /* mouse over link */
+a:active {color: #ADD8E6;}  /* selected link */ 

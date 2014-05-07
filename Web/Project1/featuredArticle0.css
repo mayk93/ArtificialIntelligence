@@ -1,0 +1,27 @@
+#titleParagraph
+{
+    text-align: center;
+    color: gray;
+}
+
+#titleParagraph:hover
+{
+    color: red;
+    text-transform:uppercase;
+}
+
+#contentParagraph
+{
+    color: white;
+}
+
+#picture
+{
+    height: 10%;
+    width: 10%;
+}
+
+#picture:hover
+{
+    box-shadow: 5px 0px 25px #888888;
+}
