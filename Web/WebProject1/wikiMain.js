@@ -15,7 +15,8 @@ function myMain()
             var check=$(this).is(":hidden");
             if(check == true)
             {
-                var img = $('<img />').attr({ 'id': 'optionalFeaturedPicture', 'src': 'unibucPic0.jpg', 'alt':'MyAlt' }).appendTo($('#navigationDiv'));
+                var picNumber = Math.floor((Math.random()*10)+1) % 3;
+                var img = $('<img />').attr({ 'id': 'optionalFeaturedPicture', 'src': 'unibucPic' + picNumber +'.jpg', 'alt':'MyAlt' }).appendTo($('#navigationDiv'));
             }
         });
       });
@@ -23,23 +24,9 @@ function myMain()
         setRandomArticle(); //Link
         setOtherArticles();
         setPictures(); //Picture
-        greenFunction();
     });
 
     
-}
-
-function greenFunction()
-{
-       $(document).ready(function() {
-
-        // page is now ready, initialize the calendar...
-
-        $('#calendar').fullCalendar({
-            // put your options and callbacks here
-        })
-
-    }); 
 }
 
 function setPictures()
@@ -53,7 +40,7 @@ function setRandomArticle()
     document.getElementById('randomLink').onclick = function()
     {
         var randomArticleChoice = Math.floor((Math.random()*10)+1);
-        randomArticleChoice = randomArticleChoice%2;
+        randomArticleChoice = randomArticleChoice%7;
         document.getElementById('featuredArticleIframe').src = "featuredArticle" + randomArticleChoice + ".html";
         return false;
     };    
@@ -68,7 +55,7 @@ function setFeaturedArticle()
 
     var h = Math.round(t / hours);
     
-    var newSource = "featuredArticle" + h%2 + ".html";
+    var newSource = "featuredArticle" + h%7 + ".html";
     document.getElementById('featuredArticleIframe').src = newSource;
     
     document.getElementById('returnToFA').onclick = function()

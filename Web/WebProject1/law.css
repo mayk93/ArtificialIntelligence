@@ -1,0 +1,71 @@
+#transformDiv
+{
+width:90%;
+height:40%;
+background-color:gray;
+transform:rotate(0deg);
+}
+
+#transformDiv:hover
+{
+width:100%;
+height:50%;
+background-color:black;
+transform:rotate(10deg);
+}
+
+#transformDiv2
+{
+margin:auto;
+border:1px solid black;
+width:25%;
+height:10%;
+background-color:silver;
+color:white;
+box-shadow: 5px 0px 25px #888888;
+animation:mymove 5s infinite;
+}
+
+#transformDiv2:hover
+{
+margin:auto;
+border:1px solid black;
+width:35%;
+height:5%;
+background-color:blue;
+color:red;
+box-shadow: 15px 1px 15px green;
+animation:mymove2 5s infinite;
+}
+
+input
+{
+    animation:othermove 10s infinite;
+    background-color:yellow;
+}
+
+input:focus
+{
+    animation:othermove2 10s infinite;
+    background-color:white;
+}
+
+@keyframes mymove
+{
+50% {transform:rotate(180deg);}
+}
+
+@keyframes othermove
+{
+50% {transform:translate(100px,100px);}
+}
+
+@keyframes mymove2
+{
+50% {transform:rotate(-180deg);}
+}
+
+@keyframes othermove2
+{
+50% {transform:scale(0.5,2);}
+}
