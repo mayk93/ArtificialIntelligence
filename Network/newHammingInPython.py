@@ -28,7 +28,7 @@ class HammingMachine:
             numberOfBits=int(math.log(numberOfBits+initialLength,2))
         return numberOfBits+1
 
-  def computeParityBits(self,markedArray,numberOfParityBits):
+  def computeParityBits(self,markedArray):
       powerOfTwo = 1
       while powerOfTwo <= len(markedArray):
           bitSum = 0
@@ -48,11 +48,31 @@ class HammingMachine:
   def encode(self,bitArray):
       numberOfParityBits = self.getNumberOfParityBits(bitArray)
       markedArray = self.markArray(numberOfParityBits,bitArray)
-      parityBits = self.computeParityBits(markedArray,numberOfParityBits)
+      parityBits = self.computeParityBits(markedArray)
 
-  def decode(self,bit):
-      pass
-
+  def decode(self,markedArray):
+      foundError = False
+      errorBit = 0
+      powerOfTwo = 1
+      while powerOfTwo <= len(markedArray):
+          bitSum = 0
+          index = powerOfTwo
+          while index <= len(markedArray):
+              bitIndex = index
+              while bitIndex < (index+powerOfTwo) and bitIndex <= len(markedArray):
+                  if not( self.isPowerOfTwo(bitIndex )):
+                      bitSum = bitSum + markedArray[bitIndex-1]
+                  bitIndex = bitIndex + 1
+              index = (bitIndex-1) + powerOfTwo + 1
+          if markedArray[powerOfTwo - 1] != (bitSum%2):
+              errorBit = errorBit + powerOfTwo - 1
+              foundError = True
+          powerOfTwo = 2*powerOfTwo
+      if foundError == True:
+          print("Error Bit: " , errorBit)
+          return errorBit
+      print("Ok")
+      return -1
   def getInput(self):
       intBitArray = input("Enter bits: ")
       return [int(x) for x in str(intBitArray)]
@@ -62,3 +82,4 @@ if __name__ == "__main__":
     hm = HammingMachine()
     test = hm.getInput()
     hm.encode(test)
+    hm.decode(test)
