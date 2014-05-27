@@ -1,0 +1,197 @@
+fmod STATE is 
+  protecting INT .
+  
+  sorts Index State .
+  
+  op empty : -> State .
+  op [_,_] : Index Int -> State .
+  op __ : State State -> State [assoc comm id: empty] .
+  op _[_] : State Index -> Int .
+  op _[_<-_] : State Index Int -> State .
+  
+  var X : Index . 
+  vars I I’ : Int .
+  var S : State .
+  
+  ceq ([X,I] S)[X] = 0 if ([X,I] S) = empty .
+  eq ([X,I] S)[X] = I [owise] .
+  eq ([X,I’] S)[X <- I] = [X,I] S .
+  eq S[X <- I] = S [X,I] .
+  ceq S [X] = 0 if S = empty .
+endfm
+
+fmod NAME is 
+  protecting QID .
+  protecting STATE .
+  
+  sort Name .
+  subsort Qid < Name .
+  subsort Name < Index .
+  
+  ops a b c d e f g h i j k l m n o p q r s t u v x y z w : -> Name .
+  op eval : Name State -> Int .
+  
+  var X : Name . 
+  var S : State .
+  
+  eq eval(X, S) = S[X] .      
+endfm
+
+fmod SYNTAX-AEXP is 
+  protecting NAME .
+  protecting INT .
+  
+  sort Exp .
+  subsorts Int Name < Exp .
+  
+  op _+_ : Exp Exp -> Exp [ditto] .
+  op _-_ : Exp Exp -> Exp [ditto] .
+  op _*_ : Exp Exp -> Exp [ditto] .
+  op _/_ : Exp Exp -> Exp [prec 31] .
+  op eval : Exp State -> Int .  
+endfm
+
+fmod SEMANTICS-AEXP is
+  protecting SYNTAX-AEXP .
+
+  vars E E’ : Exp . var I : Int . var S : State .
+  
+  eq eval(I, S) = I .
+  eq eval(E + E’, S) = eval(E, S) + eval(E’, S) .
+  eq eval(E - E’, S) = eval(E, S) - eval(E’, S) .
+  eq eval(E * E’, S) = eval(E, S) * eval(E’, S) .
+  eq eval(E / E’, S) = eval(E, S) quo eval(E’, S) . 
+endfm
+
+fmod SYNTAX-BEXP is 
+  protecting SYNTAX-AEXP .
+  protecting SEMANTICS-AEXP .
+  protecting STATE .
+  
+  sort BExp .
+  
+  op _egal_ : Exp Exp -> BExp .
+  op nu_ : BExp -> BExp .
+  op even? : Exp -> BExp .
+  op _si_ : BExp BExp -> BExp .
+  op _my<=_ : Exp Exp -> BExp .
+  op _my<_ : Exp Exp -> BExp .
+  op _my>=_ : Exp Exp -> BExp .
+  op _my>_ : Exp Exp -> BExp .  
+  op eval : BExp State -> Bool .
+endfm
+
+fmod SEMANTICS-BEXP is
+  protecting SYNTAX-BEXP .
+  
+  vars E E’ : Exp . vars BE BE’ : BExp .
+  var S : State .
+  
+  eq eval(E egal E’, S) = eval(E, S) == eval(E’, S) .
+  eq eval(nu BE, S) = not eval(BE, S) .
+  eq eval(BE si BE’, S) = eval(BE, S) and eval(BE’, S) .
+  eq eval(E my<= E’, S) = eval(E, S) <= eval(E’, S) .
+  eq eval(E my< E’, S) = eval(E, S) < eval(E’, S) .
+  eq eval(E my>= E’, S) = eval(E, S) >= eval(E’, S) .
+  eq eval(E my> E’, S) = eval(E, S) > eval(E’, S) .  
+  eq eval(even?(E), S) = eval(E, S) rem 2 == 0 .    
+endfm
+
+fmod SYNTAX-STMT is
+  protecting SYNTAX-AEXP .
+  protecting SEMANTICS-AEXP .
+  protecting SYNTAX-BEXP .
+  protecting SEMANTICS-BEXP .
+  protecting STATE .
+  
+  sort Stmt .
+  sort StmtList .
+  subsort Stmt < StmtList .
+  
+  op vid : -> Stmt .
+  op _=_ : Name Exp -> Stmt [prec 40] .
+
+
+  op _ _ : StmtList StmtList -> StmtList [assoc] .
+  op _;_ : StmtList StmtList -> StmtList [assoc] .   
+  op {_} : StmtList -> Stmt .   
+  op daca_atunci_altfel_ : BExp Stmt Stmt -> Stmt .
+  op pentru(_;_;_)_ : Stmt BExp Stmt Stmt -> Stmt .
+  op cat-timp__ : BExp Stmt -> Stmt .
+  op state : Stmt State -> State .
+  op state : StmtList State -> State .  
+endfm
+
+fmod SEMANTICS-STMT is
+  protecting SYNTAX-STMT .
+    
+  var X : Name . 
+  var E : Exp . 
+  var S : State . 
+  var Stl : StmtList .
+  var BE : BExp . 
+  vars St St’ St1 St2 St3 : Stmt .
+  
+  eq state(vid, S:State) = S:State .
+  eq state(X = E, S) = S[X <- eval(E,S)] .
+
+  eq St Stl = St ; Stl .
+  eq state(St ; Stl, S) = state(Stl, state(St, S)) .
+  eq state({Stl}, S) = state(Stl, S) .
+  eq state(daca BE atunci St altfel St’, S) = if eval(BE, S) then state(St, S) else state(St’, S) fi . 
+  eq pentru(St1 ; BE ; St2) St3 = St1 ; cat-timp BE {St3 ; St2} .
+  eq state(cat-timp BE St, S) = if eval(BE, S) then state(cat-timp BE St, state(St, S)) else S fi .     
+endfm
+
+fmod PROG-LANG is
+  extending SYNTAX-STMT .
+  extending SEMANTICS-STMT .
+  
+  sort Pgm .
+  
+  op start_stop : StmtList -> Pgm .
+  op afiseaza : Exp -> Stmt .
+  
+  sort ListAfis .
+  
+  subsort Int < ListAfis .
+
+  op exec : Pgm -> State .
+  op nilA : -> ListAfis .
+  op __ : ListAfis ListAfis -> ListAfis [assoc id: nilA ] .
+  op run : Pgm -> ListAfis .
+  op run : StmtList State -> ListAfis .
+  
+  var Stl : StmtList .
+  var E : Exp .
+  var S : State .
+  vars St St1 St2 : Stmt .
+  var V : Name .
+  var B : BExp .
+
+  eq exec(start Stl stop) = state(Stl, empty) .
+  eq state(afiseaza(E), S) = S .
+  eq run(start Stl stop) = run(Stl, empty) .
+  eq run(St ; Stl, S) = run( St, S) run(Stl,state(St, S)) .
+  eq run({Stl}, S) = run (Stl, S) .
+  eq run(vid, S) = nilA .
+  eq run(afiseaza(E), S) = eval(E, S) .
+  eq run(V = E, S) = nilA .
+
+  eq run (daca B atunci St altfel St1 , S) = if eval(B, S) then run(St, S) else run(St1, S) fi .
+  eq run (cat-timp( B ) St, S) = if eval(B, S) then (run(St, S) run(cat-timp( B ) St , state(St , S))) else nilA fi .
+  eq run( pentru( St ; B ; St1 ) St2, S) = run(St,S) run(cat-timp( B ) {St2 ; St1},state(St, S)).  
+endfm
+
+red run( start
+  n = 10232323 ;
+  c = 0 ;
+  cat-timp nu (n egal 1)
+  { 
+    c = c + 1 ; 
+    afiseaza ( c )  ;
+    daca even?(n)
+    atunci n = n / 2
+    altfel n = 3 * n + 1  
+  } 
+stop ) .
