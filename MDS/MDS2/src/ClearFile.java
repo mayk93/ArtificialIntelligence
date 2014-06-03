@@ -1,3 +1,8 @@
+import br.ufpe.cin.groundhog.Project;
+import br.ufpe.cin.groundhog.search.SearchGitHub;
+import br.ufpe.cin.groundhog.search.SearchModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -15,6 +20,9 @@ import javax.swing.*;
 
 public class ClearFile 
 {
+        Injector injector = Guice.createInjector(new SearchModule());
+        SearchGitHub searchGitHub = injector.getInstance(SearchGitHub.class);
+    
 	static PrintWriter writer;
 	static boolean existingComment = false;
 	static boolean needSpace = false;
@@ -208,6 +216,7 @@ public class ClearFile
 	
 	public static void main(String args[])
 	{
+            
                 ProcessInput processInput = new ProcessInput();
             
                 JFrame frame = new JFrame("Notif");
@@ -265,5 +274,6 @@ public class ClearFile
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+                
 	}
 }
