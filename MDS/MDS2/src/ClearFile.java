@@ -37,11 +37,11 @@ public class ClearFile
 		return line.substring(start,finish + 1);
 	}
 	
-	public static void write(String line,boolean endLine)
+	public static StringBuilder write(String line,boolean endLine)
 	{
 		if(line == null)
 		{
-			return;
+			return null;
 		}
 		if(line.contains("#"))
 		{
@@ -106,7 +106,7 @@ public class ClearFile
 		
 		if(stringBuilder.length() == 1)
 		{
-			return;
+			return null;
 		}
 		
 		if(endLine)
@@ -131,10 +131,12 @@ public class ClearFile
 		{
 			needSpace = true;
 		}
+                
+                return stringBuilder;
 		
 	}
 	
-	public static void clear(String line)
+	public static StringBuilder clear(String line)
 	{
 		
 		int start = 0;
@@ -212,6 +214,8 @@ public class ClearFile
 				}
 			}
 		}
+                
+                return write(getSubstring(line,start,0),false);
 	}
 	
 	public static void main(String args[])
