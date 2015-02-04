@@ -25,7 +25,7 @@ def invertedF(x):
         return 1
 
 def MReversed():
-    U = random.randrange(0,1)
+    U = random.uniform(0,1)
     X = invertedF(U)
     return X
     
