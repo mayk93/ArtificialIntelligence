@@ -30,10 +30,10 @@ def MReversed():
     return X
     
 def main():
+    Results = []
     for i in range(0, 100):
-        print(MReversed(),", ")
-        if i % 10 == 0:
-            print("")
+        Results.append(MReversed())
+    print(Results)
 
 if __name__ == "__main__":
     main()
