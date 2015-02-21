@@ -1,43 +1,115 @@
-#include<gtk/gtk.h>
-#include<iostream>
+#include <gtk/gtk.h>
+#include <iostream>
 #include <stdlib.h>
+#include <string.h>
+#include <fstream>
+#include <vector>
+#include <algorithm>
+#include <iterator>
+#include <sstream>
 
 using namespace std;
 
 gint numberOfClicks = 0;
 
-static void onClick(GtkWidget **entry, GtkWidget *widget)
+int readTransition(string path, int numberOfStates)
 {
-    /*
-    g_print("%s\n",gtk_entry_get_text(GTK_ENTRY(data)));
-    cout<<"Here 0\n";
-    long int numberOfStates = -1;
-    cout<<"Here 1\n";
-    char* pEnd;
-    cout<<"Here 2\n";
-    numberOfStates = strtol (gtk_entry_get_text(GTK_ENTRY(data)), &pEnd, 10);
-    cout<<"Here 3\n";
-    g_print("%ld\n",numberOfStates);
-    cout<<"Here 4\n";
-    */
+    vector< vector<int> > transitionMatrix(10);
     
+    for(int i = 0; i < numberOfStates; i++)
+	{
+		vector<int> temp; // create an array, don't work directly on buff yet.
+		for(int j = 0; j < numberOfStates; j++)
+		{
+			temp.push_back(-1); 
+		}
+		transitionMatrix.push_back(temp); // Store the array in the buffer
+	}
+
+	//To access values
+	for(vector<vector<int> >::iterator it = transitionMatrix.begin(); it != transitionMatrix.end(); ++it)
+	{
+		//it is now a pointer to a vector<int>
+		for(vector<int>::iterator jt = it->begin(); jt != it->end(); ++jt)
+		{
+			// jt is now a pointer to an integer.
+			//cout << *jt;
+		}
+		//cout << endl;
+	}
+    
+    string line;
+    ifstream myfile (path.c_str());
+    if (myfile.is_open())
+    {
+      while ( getline (myfile,line) )
+      {
+        string str(line);
+        string buf; // Have a buffer string
+        stringstream ss(str); // Insert the string into a stream
+
+        vector<string> tokens; // Create vector to hold our words
+        
+        while (ss >> buf)
+        {
+            tokens.push_back(buf);             
+        }
+        
+        for(vector<string>::iterator jt = tokens.begin(); jt != tokens.end(); ++jt)
+        {
+            cout << *jt<<" ";
+        }
+      }
+      myfile.close();
+      
+      return 0;
+    }
+
+    else
+    {
+        return -1;
+    }  
+
+  return -1;
+}
+
+static void onClick(GtkWidget **entry, GtkWidget *widget)
+{    
   GtkWidget *entry_ptr_a = entry[0];
   GtkWidget *entry_ptr_s = entry[1];
   GtkWidget *entry_ptr_t = entry[2];
   GtkWidget *entry_ptr_v = entry[3];
   GtkWidget *entry_ptr_r = entry[4];
 
-  const gchar *a, *s, *t, *v, *r;
+  const gchar *entryStatesQ_NumberOfStates, 
+               *entrySymbolsE_Alphabet,
+               *entryTransitionTableD_Path, 
+               *entryFinalStatesF_FS, 
+               *entry_WordToCheck;
 
 
-  a = gtk_entry_get_text(GTK_ENTRY (entry_ptr_a));
-  s = gtk_entry_get_text(GTK_ENTRY (entry_ptr_s));
-  t = gtk_entry_get_text(GTK_ENTRY (entry_ptr_t));
-  v = gtk_entry_get_text(GTK_ENTRY (entry_ptr_v));
-  r = gtk_entry_get_text(GTK_ENTRY (entry_ptr_r));
-
-
-  printf ("Result: %s , %s, %s, %s, %s\n", a, s, t, v, r);  
+  entryStatesQ_NumberOfStates = gtk_entry_get_text(GTK_ENTRY (entry_ptr_a));
+  entrySymbolsE_Alphabet = gtk_entry_get_text(GTK_ENTRY (entry_ptr_s));
+  entryTransitionTableD_Path = gtk_entry_get_text(GTK_ENTRY (entry_ptr_t));
+  entryFinalStatesF_FS = gtk_entry_get_text(GTK_ENTRY (entry_ptr_v));
+  entry_WordToCheck = gtk_entry_get_text(GTK_ENTRY (entry_ptr_r));
+    
+  char* pEnd;
+  long int numberOfStates = -1;  
+  
+  numberOfStates = strtol (entryStatesQ_NumberOfStates, &pEnd, 10); 
+  string alphabet(entrySymbolsE_Alphabet);
+  string pathToFile(entryTransitionTableD_Path);
+  
+  readTransition(pathToFile);
+  
+  /*
+  size_t isHere = alphabet.find("z");
+  if (isHere==std::string::npos)
+  {
+  }
+  */
+  
 }
 
 int main(int argc, char* argv[])
