@@ -7,12 +7,115 @@
 #include <algorithm>
 #include <iterator>
 #include <sstream>
+#include <unistd.h>
+#include <X11/Xlib.h>
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 using namespace std;
 
-gint numberOfClicks = 0;
+int hasBeenAccepted = 0;
 
-int readTransition(string path, int numberOfStates, string finalStatesRaw)
+void NFA(int numberOfStates,vector<vector<string> > transitionMatrix,vector<long int> finalStates,string alphabet, string wordToCheck, int currentState, int currentLetterIndex, pid_t mainProcessPID)
+{
+    if(std::find(finalStates.begin(), finalStates.end(), currentState) != finalStates.end() && currentLetterIndex >= wordToCheck.size()-1)
+    {
+        hasBeenAccepted = 1;
+        cout<<"Word Accepted 0"<<endl;
+        if(getpid() != mainProcessPID)
+        {
+            kill(getpid(), SIGKILL);
+        }        
+    }
+
+    //cout<<"====="<<endl;
+    //cout<<currentState<<" "<<currentLetterIndex<<endl;
+    
+    pid_t the_pid;
+    string currentLetter;
+    if(currentLetterIndex < wordToCheck.size())
+    {
+        stringstream ss;
+        ss << wordToCheck[currentLetterIndex];
+        
+        ss >> currentLetter;
+        
+        vector<string> possibleTransitions = transitionMatrix.at(currentState);
+        
+        //cout<<"Current Letter: "<<currentLetter<<endl;    
+        //cout<<"Current Possible Transitions: "<<endl;
+        
+        for(vector<string>::iterator itStr = possibleTransitions.begin(); itStr != possibleTransitions.end(); ++itStr)
+        {
+            //cout<<*itStr<<" ";
+        }
+        //cout<<endl<<"====="<<endl<<endl;
+        
+        for(int possibleNextState = 0; possibleNextState < possibleTransitions.size(); possibleNextState++)
+        {
+            if(possibleTransitions[possibleNextState] == currentLetter)
+            {
+                the_pid = fork();
+                if(the_pid == 0) //Child
+                {
+                    currentState = possibleNextState;
+                    currentLetterIndex = currentLetterIndex + 1;
+                    NFA(numberOfStates,transitionMatrix,finalStates,alphabet,wordToCheck,currentState,currentLetterIndex,mainProcessPID);
+                }
+                else //Father
+                {
+                    size_t isHere = alphabet.find(currentLetter);
+                    if((hasBeenAccepted == 0)&&(( (currentLetterIndex >= wordToCheck.size()) && (!(std::find(finalStates.begin(), finalStates.end(), currentState) != finalStates.end())) ) || isHere==std::string::npos))
+                    {
+                        cout<<"Word Rejected 0"<<endl;
+                        if(getpid() != mainProcessPID)
+                        {
+                            kill(the_pid, SIGKILL);
+                        }
+                    }
+                    else
+                    {
+                        if(std::find(finalStates.begin(), finalStates.end(), currentState) != finalStates.end())
+                        {
+                            hasBeenAccepted = 1;
+                            cout<<"Word Accepted 1"<<endl;
+                            if(getpid() != mainProcessPID)
+                            {
+                                kill(the_pid, SIGKILL);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        size_t isHere = alphabet.find(currentLetter);
+        if((hasBeenAccepted == 0) && (( (currentLetterIndex >= wordToCheck.size()) && (!(std::find(finalStates.begin(), finalStates.end(), currentState) != finalStates.end())) ) || isHere==std::string::npos))
+        {
+            cout<<"Word Rejected 1"<<endl;
+            if(getpid() != mainProcessPID)
+            {
+                kill(the_pid, SIGKILL);
+            }
+        }
+        else
+        {
+            if(std::find(finalStates.begin(), finalStates.end(), currentState) != finalStates.end())
+            {
+                cout<<"Word Accepted 2"<<endl;
+                if(getpid() != mainProcessPID)
+                {
+                    kill(the_pid, SIGKILL);
+                }
+            }
+        }    
+    }
+}
+
+int readTransition(string path, int numberOfStates, string finalStatesRaw,string alphabet, string wordToCheck)
 {
     string defaultSymbol = "#";
     vector< vector<string> > transitionMatrix(numberOfStates,vector<string>(numberOfStates,defaultSymbol));
@@ -72,7 +175,9 @@ int readTransition(string path, int numberOfStates, string finalStatesRaw)
           finalStates.push_back(possibleFinalState);
       }         
       
-      
+      //int numberOfStates,vector<vector<string> > transitionMatrix,vector<long int> finalStates,string alphabet, string wordToCheck, int currentState, int currentLetterIndex
+      pid_t mainProcessPID = getpid();
+      NFA(numberOfStates,transitionMatrix,finalStates,alphabet,wordToCheck,0,0,mainProcessPID);
       
       return 0;
     }
@@ -80,13 +185,6 @@ int readTransition(string path, int numberOfStates, string finalStatesRaw)
     {
         return -1;
     }  
-
-  /*
-  size_t isHere = alphabet.find("z");
-  if (isHere==std::string::npos)
-  {
-  }
-  */
 
   return -1;
 }
@@ -119,8 +217,9 @@ static void onClick(GtkWidget **entry, GtkWidget *widget)
   string alphabet(entrySymbolsE_Alphabet);
   string pathToFile(entryTransitionTableD_Path);
   string finalStates(entryFinalStatesF_FS);
+  string toCheck(entry_WordToCheck);
   
-  readTransition(pathToFile,numberOfStates,finalStates);
+  readTransition(pathToFile,numberOfStates,finalStates,alphabet,toCheck);
 }
 
 int main(int argc, char* argv[])
@@ -133,6 +232,7 @@ int main(int argc, char* argv[])
     const char* finalText      = "Enter final states";
     
     //Initialize Gtk
+    XInitThreads();
     gtk_init(&argc,&argv);
     
     //Widgets
