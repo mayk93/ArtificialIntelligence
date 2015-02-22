@@ -15,17 +15,96 @@
 
 using namespace std;
 
+//static int *hasBeenAccepted;
 int hasBeenAccepted = 0;
 
+    /* IMPORTANT!!! */
+    
+        /*
+        The matrix must be change to a 3D matrix in order to
+        record all possible transitions.
+        
+        See example aadbe, where we can transition from
+        state 1 with BOTH "b" and "e" to 3. Currently, only "e"
+        is recorded as facilitating the transition.
+        
+        Please fix immedietly!
+        */
+    
+    /* IMPORTANT!!! */
+
+void NFA(int numberOfStates,vector<vector<string> > transitionMatrix,vector<long int> finalStates,string alphabet, string wordToCheck, int currentState, string currentLetter, int currentLetterIndex, pid_t mainProcessPID)
+{
+    if(currentLetterIndex < wordToCheck.length())
+    {
+        /*
+        cout<<"====="<<endl;
+        cout<<"Current State: "<<currentState<<endl;
+        cout<<"Current Letter: "<<currentLetter<<endl;
+        cout<<"Main Process Pid: "<<mainProcessPID<<endl;
+        cout<<"Possible next states: ";
+        */
+        vector<string> possibleTransitions = transitionMatrix.at(currentState);
+        int possibleNextState = 0;
+        
+        vector<int> possibleNextStatesVector;
+        
+        for(vector<string>::iterator itStr = possibleTransitions.begin(); itStr != possibleTransitions.end(); ++itStr)
+        {
+            string transitionSymbol = *itStr;
+            if(currentLetter == transitionSymbol)
+            {
+                //cout<<possibleNextState<<" ";
+                possibleNextStatesVector.push_back(possibleNextState);
+            }
+            possibleNextState = possibleNextState + 1;
+        }
+        //cout<<endl;
+        //cout<<"====="<<endl<<endl;
+        
+        if( !possibleNextStatesVector.empty() )
+        {
+            for(vector<int>::iterator psi = possibleNextStatesVector.begin(); psi != possibleNextStatesVector.end(); ++psi)
+            {
+              string currentLetter;
+              stringstream ss;
+              ss << wordToCheck[currentLetterIndex+1];
+              ss >> currentLetter;
+              
+              NFA(numberOfStates,transitionMatrix,finalStates,alphabet,wordToCheck,*psi,currentLetter,currentLetterIndex+1,mainProcessPID);
+            }
+        }
+        else
+        {
+            //cout<<"Return 0."<<endl;
+            return;
+        }
+    }
+    else
+    {
+        //cout<<"State at ending: "<<currentState<<endl;
+        if(std::find(finalStates.begin(), finalStates.end(), currentState) != finalStates.end())
+        {
+            hasBeenAccepted = 1;
+            //cout<<"Accepted."<<endl;
+        }
+        //cout<<"Return 1."<<endl;
+        return;
+    }
+}
+
+/*
 void NFA(int numberOfStates,vector<vector<string> > transitionMatrix,vector<long int> finalStates,string alphabet, string wordToCheck, int currentState, int currentLetterIndex, pid_t mainProcessPID)
 {
     if(std::find(finalStates.begin(), finalStates.end(), currentState) != finalStates.end() && currentLetterIndex >= wordToCheck.size()-1)
     {
-        hasBeenAccepted = 1;
+        //*hasBeenAccepted = 1;
         cout<<"Word Accepted 0"<<endl;
         if(getpid() != mainProcessPID)
         {
+            cout<<"XYZ"<<endl;
             kill(getpid(), SIGKILL);
+            //exit(EXIT_SUCCESS);
         }        
     }
 
@@ -66,6 +145,9 @@ void NFA(int numberOfStates,vector<vector<string> > transitionMatrix,vector<long
                 else //Father
                 {
                     size_t isHere = alphabet.find(currentLetter);
+                    
+                    //munmap(hasBeenAccepted, sizeof *hasBeenAccepted);
+                    
                     if((hasBeenAccepted == 0)&&(( (currentLetterIndex >= wordToCheck.size()) && (!(std::find(finalStates.begin(), finalStates.end(), currentState) != finalStates.end())) ) || isHere==std::string::npos))
                     {
                         cout<<"Word Rejected 0"<<endl;
@@ -78,7 +160,7 @@ void NFA(int numberOfStates,vector<vector<string> > transitionMatrix,vector<long
                     {
                         if(std::find(finalStates.begin(), finalStates.end(), currentState) != finalStates.end())
                         {
-                            hasBeenAccepted = 1;
+                            //*hasBeenAccepted = 1;
                             cout<<"Word Accepted 1"<<endl;
                             if(getpid() != mainProcessPID)
                             {
@@ -93,6 +175,9 @@ void NFA(int numberOfStates,vector<vector<string> > transitionMatrix,vector<long
     else
     {
         size_t isHere = alphabet.find(currentLetter);
+        
+        //munmap(hasBeenAccepted, sizeof *hasBeenAccepted);
+        
         if((hasBeenAccepted == 0) && (( (currentLetterIndex >= wordToCheck.size()) && (!(std::find(finalStates.begin(), finalStates.end(), currentState) != finalStates.end())) ) || isHere==std::string::npos))
         {
             cout<<"Word Rejected 1"<<endl;
@@ -114,6 +199,7 @@ void NFA(int numberOfStates,vector<vector<string> > transitionMatrix,vector<long
         }    
     }
 }
+*/
 
 int readTransition(string path, int numberOfStates, string finalStatesRaw,string alphabet, string wordToCheck)
 {
@@ -177,7 +263,34 @@ int readTransition(string path, int numberOfStates, string finalStatesRaw,string
       
       //int numberOfStates,vector<vector<string> > transitionMatrix,vector<long int> finalStates,string alphabet, string wordToCheck, int currentState, int currentLetterIndex
       pid_t mainProcessPID = getpid();
-      NFA(numberOfStates,transitionMatrix,finalStates,alphabet,wordToCheck,0,0,mainProcessPID);
+      
+      //NFA(numberOfStates,transitionMatrix,finalStates,alphabet,wordToCheck,0,0,mainProcessPID);
+      string currentLetter;
+      stringstream ss;
+      ss << wordToCheck[0];
+      ss >> currentLetter;
+      
+      /*
+      for(int i = 0; i<numberOfStates; i++)
+      {
+        for(int j = 0; j<numberOfStates; j++)
+        {
+            cout<<transitionMatrix[i][j]<<" ";
+        }
+        cout<<endl;
+      }
+      */
+      
+      NFA(numberOfStates,transitionMatrix,finalStates,alphabet,wordToCheck,0,currentLetter,0,mainProcessPID);
+      
+      if(hasBeenAccepted == 0)
+      {
+        cout<<"Rejected."<<endl;
+      }
+      else
+      {
+        cout<<"Accepted."<<endl;
+      }
       
       return 0;
     }
@@ -224,6 +337,10 @@ static void onClick(GtkWidget **entry, GtkWidget *widget)
 
 int main(int argc, char* argv[])
 {
+    //hasBeenAccepted = (int*)mmap(NULL, sizeof *hasBeenAccepted, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+
+    //*hasBeenAccepted = 0;
+
     //Variables
     const char* titleText      = "Nondeterministic Finite Automaton";
     const char* statesText     = "Enter number of states";
