@@ -12,63 +12,81 @@ using namespace std;
 
 gint numberOfClicks = 0;
 
-int readTransition(string path, int numberOfStates)
+int readTransition(string path, int numberOfStates, string finalStatesRaw)
 {
-    vector< vector<int> > transitionMatrix(10);
-    
-    for(int i = 0; i < numberOfStates; i++)
-	{
-		vector<int> temp; // create an array, don't work directly on buff yet.
-		for(int j = 0; j < numberOfStates; j++)
-		{
-			temp.push_back(-1); 
-		}
-		transitionMatrix.push_back(temp); // Store the array in the buffer
-	}
-
-	//To access values
-	for(vector<vector<int> >::iterator it = transitionMatrix.begin(); it != transitionMatrix.end(); ++it)
-	{
-		//it is now a pointer to a vector<int>
-		for(vector<int>::iterator jt = it->begin(); jt != it->end(); ++jt)
-		{
-			// jt is now a pointer to an integer.
-			//cout << *jt;
-		}
-		//cout << endl;
-	}
-    
+    string defaultSymbol = "#";
+    vector< vector<string> > transitionMatrix(numberOfStates,vector<string>(numberOfStates,defaultSymbol));
     string line;
+    
     ifstream myfile (path.c_str());
+    
     if (myfile.is_open())
     {
+      vector<string> tokens;
       while ( getline (myfile,line) )
       {
-        string str(line);
-        string buf; // Have a buffer string
-        stringstream ss(str); // Insert the string into a stream
-
-        vector<string> tokens; // Create vector to hold our words
-        
-        while (ss >> buf)
-        {
-            tokens.push_back(buf);             
-        }
-        
-        for(vector<string>::iterator jt = tokens.begin(); jt != tokens.end(); ++jt)
-        {
-            cout << *jt<<" ";
-        }
+          string str(line);
+          string buf;
+          stringstream ss(str); 
+          while (ss >> buf)
+          {
+              tokens.push_back(buf);             
+          }
+      }
+      
+      for(int ix = 0; ix < tokens.size()-3; ix = ix + 3)
+      {
+          char* pEnd;
+          long int currentState = strtol (tokens.at(ix).c_str(),&pEnd,10);
+          string symbol = tokens.at(ix+1);
+          long int nextState = strtol (tokens.at(ix+2).c_str(),&pEnd,10);
+          
+          for(long int i = 0; i < numberOfStates; i++)
+	      {
+		      for(long int j = 0; j < numberOfStates; j++)
+		      {
+		          if(i == currentState && j == nextState)
+		          {
+		              transitionMatrix[i][j] = symbol;
+		          }
+		      }
+	      }
       }
       myfile.close();
       
+      vector<string> tokensX;
+      string strX(finalStatesRaw);
+      string bufX;
+      stringstream ssX(strX); 
+      while (ssX >> bufX)
+      {
+          tokensX.push_back(bufX);             
+      }
+    
+      vector<long int> finalStates;
+      for(vector<string>::iterator sit = tokensX.begin(); sit != tokensX.end(); ++sit)
+      {
+          char* pEnd;
+          string possibleFinalStateString(*sit);
+          long int possibleFinalState = strtol (possibleFinalStateString.c_str(),&pEnd,10);
+          finalStates.push_back(possibleFinalState);
+      }         
+      
+      
+      
       return 0;
     }
-
     else
     {
         return -1;
     }  
+
+  /*
+  size_t isHere = alphabet.find("z");
+  if (isHere==std::string::npos)
+  {
+  }
+  */
 
   return -1;
 }
@@ -100,16 +118,9 @@ static void onClick(GtkWidget **entry, GtkWidget *widget)
   numberOfStates = strtol (entryStatesQ_NumberOfStates, &pEnd, 10); 
   string alphabet(entrySymbolsE_Alphabet);
   string pathToFile(entryTransitionTableD_Path);
+  string finalStates(entryFinalStatesF_FS);
   
-  readTransition(pathToFile);
-  
-  /*
-  size_t isHere = alphabet.find("z");
-  if (isHere==std::string::npos)
-  {
-  }
-  */
-  
+  readTransition(pathToFile,numberOfStates,finalStates);
 }
 
 int main(int argc, char* argv[])
