@@ -29,6 +29,9 @@ int hasBeenAccepted = 0;
         is recorded as facilitating the transition.
         
         Please fix immedietly!
+        
+        Also, take into consideration overhaul via dictionary use.
+        In addition, must change reccurency with processes.
         */
     
     /* IMPORTANT!!! */
