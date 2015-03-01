@@ -24,25 +24,9 @@ reachedFinalState = False
 
 def nfa(inputString,currentSymbolIndex,currentState):
     '''
-    Here, I check if I entered an empty string.
-    If I did, I must see if there are any lambda transitions from the initial state
-    '''
-    if len(inputString) == 0:
-        currentPossibleLambdaTransitions = possibleLambdaTransitions(currentState)
-        if len(currentPossibleLambdaTransitions) > 0:
-            for transition in currentPossibleLambdaTransitions:
-                nfa(inputString,currentSymbolIndex,transition)
-        else:
-            if currentState in finalStates:
-                global reachedFinalState
-                reachedFinalState = True
-                return
-            else:
-                return
-    '''
     Here, I still have symbols to check
     '''
-    if currentSymbolIndex < len(inputString) and reachedFinalState == False:
+    if currentSymbolIndex < len(inputString):
         currentPossibleTransitions = possibleTransitions(inputString[currentSymbolIndex],currentState)
         newSymbolIndex = currentSymbolIndex + 1
         
