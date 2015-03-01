@@ -42,7 +42,10 @@ def nfa(inputString,currentSymbolIndex,currentState):
     '''
     Here, I still have symbols to check
     '''
-    if currentSymbolIndex < len(inputString) and reachedFinalState == False:  
+    if currentSymbolIndex < len(inputString) and reachedFinalState == False:
+        currentPossibleTransitions = possibleTransitions(inputString[currentSymbolIndex],currentState)
+        newSymbolIndex = currentSymbolIndex + 1
+        
         for transition in currentPossibleTransitions:
             nfa(inputString,newSymbolIndex,transition)
     else:
