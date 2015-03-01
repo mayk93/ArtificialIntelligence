@@ -1,10 +1,10 @@
-inputString = "a"
+inputString = "1111111111"
 
 lambdaTransition = 0
 
 states  = [1,2,3,4]
-symbols = ['a','b']
-delta = {'a':[(1,1),(1,2),(1,3)],'b':[(2,3)],lambdaTransition:[(1,2),(1,4)]}
+symbols = ['0','1']
+delta = {'0':[(3,4),(4,5)],'1':[(1,2),(1,4),(5,6),(6,6)],lambdaTransition:[(1,2),(2,3),(4,5)]}
 initialState = 1
 finalStates = [3]
 
@@ -28,10 +28,13 @@ def nfa(inputString,currentSymbolIndex,currentState):
     '''
     if currentSymbolIndex < len(inputString):
         currentPossibleTransitions = possibleTransitions(inputString[currentSymbolIndex],currentState)
+        currentPossibleLambdaTransitions = possibleLambdaTransitions(currentState)
         newSymbolIndex = currentSymbolIndex + 1
         
         for transition in currentPossibleTransitions:
             nfa(inputString,newSymbolIndex,transition)
+        for lambdaTransition in currentPossibleLambdaTransitions:
+            nfa(inputString,currentSymbolIndex,lambdaTransition)
     else:
         '''
         Here, I run out of symbols to parse, so I check if I am in a final state,
@@ -56,9 +59,6 @@ def possibleTransitions(currentSymbol,currentState):
             for transition in delta[symbol]:
                 if currentState == transition[possibleCurrentState]:
                     possibleTransitions.append(transition[possibleNextState])
-    for transition in delta[lambdaTransition]:
-        if currentState == transition[possibleCurrentState]:
-            possibleTransitions.append(transition[possibleNextState])
     return list(set(possibleTransitions))
 
 def possibleLambdaTransitions(currentState):
