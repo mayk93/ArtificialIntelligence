@@ -195,14 +195,16 @@ class Application(tk.Frame):
         self.NFArunApplication["command"] = self.runApplication
         self.NFArunApplication.pack()
 
-        self.QUIT = tk.Button(self, text="QUIT", fg="red",command=root.destroy)
+        self.QUIT = tk.Button(self,text="QUIT",command=root.destroy)
         self.QUIT.pack()
 
     def runApplication(self):
         global inputString
         inputString = self.inputEntry.get()
         if(checkInput(inputString)):
-            pass
+            nfa(inputString,startSymbolIndex,initialState)
+            result = tk.Label(root, text=str(reachedFinalState))
+            result.pack()
         
 def display():
     global root
@@ -212,8 +214,6 @@ def display():
 def main():
     getInput(fileName)
     display()
-    nfa(inputString,startSymbolIndex,initialState)
-    print(reachedFinalState)
     
 if __name__ == "__main__":
     main()
