@@ -24,8 +24,8 @@ possibleCurrentState = 0
 possibleNextState = 1
 startSymbolIndex = 0
 initialState = 1
-maxRecursions = 50
-maxLambdaRecursions = 50
+maxRecursions = 500
+maxLambdaRecursions = 500
 
 #Input NFA from file
 fileName = "input.txt"
@@ -68,14 +68,15 @@ def getInput(fileName):
             delta[currentSymbol] = list(zip(*2*[iter([int(transition) for transition in rawTransitions[1:]])]))
     # Read lambda transitions. Write -1 if there are no lambda transitions.
     rawLambdaTransitions = list(inputFile.readline().split(' '))
-    if noLambdaTransitions in rawLambdaTransitions:
+    if noLambdaTransitions in [int(transition) for transition in rawLambdaTransitions]:
         pass
     else:
         if len(rawLambdaTransitions) % 2 == 1:
             print("Invalid Input. There must be an even number of lambda transitions on the line.")
             return
         else:
-            delta[lambdaTransition] = list(zip(*2*[iter([int(transition) for transition in rawLambdaTransitions[1:]])]))
+            lt = list(zip(*2*[iter([int(transition) for transition in rawLambdaTransitions])]))
+            delta[lambdaTransition] = lt#list(zip(*2*[iter([int(transition) for transition in rawLambdaTransitions[1:]])]))
     initialState = list(inputFile.readline().split(' '))
     if len(initialState) != 1:
         print("Invalid Input. There must only one initial state.")
@@ -100,7 +101,6 @@ transitionWithA[possibleNextState] = 2
 reachedFinalState = False
 
 def nfa(inputString,currentSymbolIndex,currentState):
-    print("CS",currentState)
     if currentSymbolIndex >= len(inputString) - 1 and currentState in finalStates:
         global reachedFinalState
         reachedFinalState = True
