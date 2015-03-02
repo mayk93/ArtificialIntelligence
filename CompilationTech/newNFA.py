@@ -1,3 +1,9 @@
+import tkinter as tk
+
+#GUI
+root = tk.Tk()
+root.geometry("300x300")
+
 #Debug purposes
 '''
 inputString = "1111111111"
@@ -18,6 +24,8 @@ possibleCurrentState = 0
 possibleNextState = 1
 startSymbolIndex = 0
 initialState = 1
+maxRecursions = 50
+maxLambdaRecursions = 50
 
 #Input NFA from file
 fileName = "input.txt"
@@ -27,7 +35,7 @@ delta = {}
 initialState = 0
 finalStates = []
 
-inputString = ""
+inputString = "" # Is added from GUI
 
 '''
 First line of file are the available states.
@@ -41,8 +49,15 @@ The following lines are the delta function:
 '''
 def getInput(fileName):
     inputFile = open(fileName, 'r')
+    
+    global states
+    global symbols
+    global delta
+    global initialState
+    global finalStates
+    
     states = [int(state) for state in list(inputFile.readline().split(' '))]
-    symbols = list(inputFile.readline().split(' '))
+    symbols = [str(symbol) for symbol in [int(symbolInt) for symbolInt in list(inputFile.readline().split(' '))]]
     for symbol in symbols:
         rawTransitions = list(inputFile.readline().split(' '))
         if len(rawTransitions) % 2 == 0:
@@ -66,7 +81,7 @@ def getInput(fileName):
         print("Invalid Input. There must only one initial state.")
         return
     else:
-        initialState = initialState[0]
+        initialState = int(initialState[0])
     finalStates = list(inputFile.readline().split(' '))
     if len(finalStates) <= 0 or '' in finalStates:
         print("Invalid Input. There must be at least one final state.")
@@ -85,6 +100,11 @@ transitionWithA[possibleNextState] = 2
 reachedFinalState = False
 
 def nfa(inputString,currentSymbolIndex,currentState):
+    print("CS",currentState)
+    if currentSymbolIndex >= len(inputString) - 1 and currentState in finalStates:
+        global reachedFinalState
+        reachedFinalState = True
+        return
     '''
     Here, I still have symbols to check
     '''
@@ -94,9 +114,15 @@ def nfa(inputString,currentSymbolIndex,currentState):
         newSymbolIndex = currentSymbolIndex + 1
         
         for transition in currentPossibleTransitions:
-            nfa(inputString,newSymbolIndex,transition)
+            global maxRecursions
+            maxRecursions = maxRecursions - 1
+            if maxRecursions > 0:
+                nfa(inputString,newSymbolIndex,transition)
         for lambdaTransition in currentPossibleLambdaTransitions:
-            nfa(inputString,currentSymbolIndex,lambdaTransition)
+            global maxLambdaRecursions
+            maxLambdaRecursions = maxLambdaRecursions - 1
+            if maxLambdaRecursions > 0:
+                nfa(inputString,currentSymbolIndex,lambdaTransition)
     else:
         '''
         Here, I run out of symbols to parse, so I check if I am in a final state,
@@ -105,7 +131,10 @@ def nfa(inputString,currentSymbolIndex,currentState):
         currentPossibleLambdaTransitions = possibleLambdaTransitions(currentState)
         if len(currentPossibleLambdaTransitions) > 0:
             for transition in currentPossibleLambdaTransitions:
-                nfa(inputString,currentSymbolIndex,transition)
+                global maxLambdaRecursions
+                maxLambdaRecursions = maxLambdaRecursions - 1
+                if maxLambdaRecursions > 0:
+                    nfa(inputString,currentSymbolIndex,transition)
         else:
             if currentState in finalStates:
                 global reachedFinalState
@@ -130,10 +159,61 @@ def possibleLambdaTransitions(currentState):
             possibleLambdaTransitions.append(currentLambdaTransition[possibleNextState])
     return list(set(possibleLambdaTransitions))
 
+def checkInput(inputString):
+    for symbol in inputString:
+        if symbol not in symbols:
+            print("0:",symbol,"not in",symbols)
+            return False
+    for transition in delta[symbol]:
+        if transition[possibleCurrentState] not in states:
+            print("1:",transition[possibleCurrentState],"not in",states)
+            return False
+        if transition[possibleNextState] not in states:
+            print("2:",transition[possibleNextState],"not in",states)
+            return False
+    if initialState not in states:
+        print("3:",initialState,"not in",states)
+        return False
+    for state in finalStates:
+        if state not in states:
+            print("4:",state,"not in",states)
+            return False
+    return True
+
+class Application(tk.Frame):
+    def __init__(self, master=None):
+        tk.Frame.__init__(self, master)
+        self.pack()
+        self.createWidgets()
+
+    def createWidgets(self):
+        self.inputEntry = tk.Entry()
+        self.inputEntry.pack()
+        
+        self.NFArunApplication = tk.Button(self)
+        self.NFArunApplication["text"] = "Run Application"
+        self.NFArunApplication["command"] = self.runApplication
+        self.NFArunApplication.pack()
+
+        self.QUIT = tk.Button(self, text="QUIT", fg="red",command=root.destroy)
+        self.QUIT.pack()
+
+    def runApplication(self):
+        global inputString
+        inputString = self.inputEntry.get()
+        if(checkInput(inputString)):
+            pass
+        
+def display():
+    global root
+    app = Application(master=root)
+    app.mainloop()
+    
 def main():
     getInput(fileName)
-    #nfa(inputString,startSymbolIndex,initialState)
-    #print(reachedFinalState)
-
+    display()
+    nfa(inputString,startSymbolIndex,initialState)
+    print(reachedFinalState)
+    
 if __name__ == "__main__":
     main()
