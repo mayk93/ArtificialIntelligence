@@ -58,6 +58,8 @@ def getInput(fileName):
     
     states = [int(state) for state in list(inputFile.readline().split(' '))]
     symbols = [str(symbol) for symbol in [int(symbolInt) for symbolInt in list(inputFile.readline().split(' '))]]
+    #This keeps the carrige return
+    #symbols = [str(symbol) for symbol in [str(symbolInt) for symbolInt in list(inputFile.readline().split(' '))]]
     for symbol in symbols:
         rawTransitions = list(inputFile.readline().split(' '))
         if len(rawTransitions) % 2 == 0:
@@ -76,7 +78,7 @@ def getInput(fileName):
             return
         else:
             lt = list(zip(*2*[iter([int(transition) for transition in rawLambdaTransitions])]))
-            delta[lambdaTransition] = lt#list(zip(*2*[iter([int(transition) for transition in rawLambdaTransitions[1:]])]))
+            delta[lambdaTransition] = lt #list(zip(*2*[iter([int(transition) for transition in rawLambdaTransitions[1:]])]))
     initialState = list(inputFile.readline().split(' '))
     if len(initialState) != 1:
         print("Invalid Input. There must only one initial state.")
@@ -101,7 +103,13 @@ transitionWithA[possibleNextState] = 2
 reachedFinalState = False
 
 def nfa(inputString,currentSymbolIndex,currentState):
-    if currentSymbolIndex >= len(inputString) - 1 and currentState in finalStates:
+    if currentSymbolIndex > len(inputString) - 1 and currentState in finalStates:
+
+        print("===")
+        print("Current state at end of symbols:",currentState)
+        print("Final States:",finalStates)
+        print("===")
+        
         global reachedFinalState
         reachedFinalState = True
         return
@@ -117,11 +125,33 @@ def nfa(inputString,currentSymbolIndex,currentState):
             global maxRecursions
             maxRecursions = maxRecursions - 1
             if maxRecursions > 0:
+
+                print("---")
+                print("CurrentSymbol:",inputString[currentSymbolIndex])
+                try:
+                    print("NextSymbol:",inputString[newSymbolIndex])
+                except:
+                    print("NextSymbol: Out of symbols")
+                print("CurrentState:",currentState)
+                print("Possible Transitions:",currentPossibleTransitions)
+                print("---")
+                
                 nfa(inputString,newSymbolIndex,transition)
         for lambdaTransition in currentPossibleLambdaTransitions:
             global maxLambdaRecursions
             maxLambdaRecursions = maxLambdaRecursions - 1
             if maxLambdaRecursions > 0:
+
+                print("###")
+                print("CurrentSymbol:",inputString[currentSymbolIndex])
+                try:
+                    print("NextSymbol:",inputString[newSymbolIndex])
+                except:
+                    print("NextSymbol: Out of symbols")
+                print("CurrentState:",currentState)
+                print("Possible Lambda Transitions:",currentPossibleLambdaTransitions)
+                print("###")
+                
                 nfa(inputString,currentSymbolIndex,lambdaTransition)
     else:
         '''
@@ -134,9 +164,21 @@ def nfa(inputString,currentSymbolIndex,currentState):
                 global maxLambdaRecursions
                 maxLambdaRecursions = maxLambdaRecursions - 1
                 if maxLambdaRecursions > 0:
+
+                    print("***")
+                    print("CurrentState:",currentState)
+                    print("Possible Lambda Transitions:",currentPossibleLambdaTransitions)
+                    print("***")
+                        
                     nfa(inputString,currentSymbolIndex,transition)
         else:
             if currentState in finalStates:
+
+                print("+++")
+                print("Current state at end of trying lambda transitions:",currentState)
+                print("Final States:",finalStates)
+                print("+++")
+                
                 global reachedFinalState
                 reachedFinalState = True
                 return
@@ -164,13 +206,14 @@ def checkInput(inputString):
         if symbol not in symbols:
             print("0:",symbol,"not in",symbols)
             return False
-    for transition in delta[symbol]:
-        if transition[possibleCurrentState] not in states:
-            print("1:",transition[possibleCurrentState],"not in",states)
-            return False
-        if transition[possibleNextState] not in states:
-            print("2:",transition[possibleNextState],"not in",states)
-            return False
+    if len(inputString) > 0:
+        for transition in delta[symbol]:
+            if transition[possibleCurrentState] not in states:
+                print("1:",transition[possibleCurrentState],"not in",states)
+                return False
+            if transition[possibleNextState] not in states:
+                print("2:",transition[possibleNextState],"not in",states)
+                return False
     if initialState not in states:
         print("3:",initialState,"not in",states)
         return False
