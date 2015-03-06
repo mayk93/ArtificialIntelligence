@@ -1,0 +1,10 @@
+[89, 52, 63, 59, 29, 105, 99, 203, 192, 200, 172, 248, 88, 225, 254] Decimal Key
+['0x59', '0x34', '0x3f', '0x3b', '0x1d', '0x69', '0x63', '0xcb', '0xc0', '0xc8', '0xac', '0xf8', '0x58', '0xe1', '0xfe'] Hex Key Array
+59343F3B1D6963CBC0C8ACF858E1FE
+electrochemical
+electromagnetic
+extraordinarily
+inadmissibility
+individualistic
+instantaneously
+generalizations

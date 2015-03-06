@@ -63,6 +63,7 @@ for index in range(0,len(cG)-1,2):
     decimalValue = int(hexString,16)
     c7Decimal.append(decimalValue%255)
 
+'''
 print(c1Decimal)
 print(c2Decimal)
 print(c3Decimal)
@@ -70,14 +71,15 @@ print(c4Decimal)
 print(c5Decimal)
 print(c6Decimal)
 print(c7Decimal)
+'''
 
 m1_xor_m2 = xor(c1Decimal,c2Decimal)
 m2_xor_m3 = xor(c2Decimal,c3Decimal)
-m3_xor_m4 = xor(c3Decimal,c4Decimal)
+m3_xor_m4 = xor(c3Decimal,c4Decimal)#Candidate
 m4_xor_m5 = xor(c4Decimal,c5Decimal)
 m5_xor_m6 = xor(c5Decimal,c6Decimal)
-m6_xor_m7 = xor(c6Decimal,c7Decimal)
-m7_xor_m1 = xor(c7Decimal,c1Decimal)
+m6_xor_m7 = xor(c6Decimal,c7Decimal)#Candidate
+m7_xor_m1 = xor(c7Decimal,c1Decimal)#Candidate
 
 '''
 print(m1_xor_m2)
@@ -110,5 +112,27 @@ hipothesis_inadmissibility = [ord(c) for c in inadmissibilityWord]
 key = xor(hipothesis_inadmissibility,c4Decimal)
 print(key)
 
+hexKey = [hex(i) for i in key]
+print(hexKey)
+
+testResult = ""
 testResult = ''.join(chr(i) for i in xor(key,c1Decimal))
+print(testResult)
+testResult = ""
+testResult = ''.join(chr(i) for i in xor(key,c2Decimal))
+print(testResult)
+testResult = ""
+testResult = ''.join(chr(i) for i in xor(key,c3Decimal))
+print(testResult)
+testResult = ""
+testResult = ''.join(chr(i) for i in xor(key,c4Decimal))
+print(testResult)
+testResult = ""
+testResult = ''.join(chr(i) for i in xor(key,c5Decimal))
+print(testResult)
+testResult = ""
+testResult = ''.join(chr(i) for i in xor(key,c6Decimal))
+print(testResult)
+testResult = ""
+testResult = ''.join(chr(i) for i in xor(key,c7Decimal))
 print(testResult)

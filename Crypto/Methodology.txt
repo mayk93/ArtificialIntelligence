@@ -1,0 +1,17 @@
+Am pornit de la faptul ca, daca doua mesaje criptate, ci si cj au fost criptate OTP cu aceeasi cheie,
+atunci ci xor cj = mi xor mj.
+
+Am "xor-uit" mesajele si am observat ca cele mai diferite intre ele ( cat mai putin 0 ) au fost cele marcate cu #candidat.
+
+Din acestea, am incercat m3_xor_m4, adica c3 xor c4.
+
+Cu accesta am "xor-uit" toate cuvintele din limba engleza de 15 litere ( nu stiu daca sunt toate )
+
+Am gasit acolo, intre xor, cuvantul "inadmissibility". Pentru ca era un cuvant lizibil,
+am decis sa il testez daca este cheie.
+
+Stim ca mi = k xor ci. Initial am testat pentru c3. Nu era bun. Am testat pentru c4 si am reusit sa obtin cheia corecta.
+
+Ideea de rezolvare am preluat-o de aici: http://crypto.stackexchange.com/questions/2249/how-does-one-attack-a-two-time-pad-i-e-one-time-pad-with-key-reuse
+
+
