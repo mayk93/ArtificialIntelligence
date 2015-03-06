@@ -1,3 +1,5 @@
+dictionary = "15letterWords.txt"
+
 cA = "3C585A58691B0CA8A8ADC1913B8092"
 cB = "3C585A58691B0CA6A1AFC29D2C889D"
 cC = "3C4C4B497C0611AFA9A6CD8A318D87 "
@@ -77,6 +79,7 @@ m5_xor_m6 = xor(c5Decimal,c6Decimal)
 m6_xor_m7 = xor(c6Decimal,c7Decimal)
 m7_xor_m1 = xor(c7Decimal,c1Decimal)
 
+'''
 print(m1_xor_m2)
 print(m2_xor_m3)
 print(m3_xor_m4)# Candidate
@@ -84,10 +87,28 @@ print(m4_xor_m5)
 print(m5_xor_m6)
 print(m6_xor_m7)# Candidate
 print(m7_xor_m1)# Candidate
+'''
 
-cribWord = "ough" 
-crib = [ord(c) for c in cribWord]
-print(crib)
-candidate = xor(m3_xor_m4,crib)
+dictionaryFile = open(dictionary,'r')
+for line in dictionaryFile:
+    for word in line.split(' '):
+        cribWord = word 
+        crib = [ord(c) for c in cribWord]
+        if crib in range(65,91) or (97,123):
+            candidate = xor(m3_xor_m4,crib)
+            possibleWord = ''.join(chr(i) for i in candidate)
+            #print(possibleWord," from ",word)
 
-print(''.join(chr(i) for i in candidate))
+#anarily
+'''
+#inadmissibility
+'''
+
+inadmissibilityWord = "inadmissibility"
+hipothesis_inadmissibility = [ord(c) for c in inadmissibilityWord]
+
+key = xor(hipothesis_inadmissibility,c4Decimal)
+print(key)
+
+testResult = ''.join(chr(i) for i in xor(key,c1Decimal))
+print(testResult)
