@@ -82,8 +82,22 @@ def multiplyMatrix(X, Y):
     return result
 
 def matrixVectorMultiplication(X, V):
+    '''
+    print("Matrix Vect")
+    print("Matrix")
+    print("Normmal MAtrix")
+    print(X)
+    print("Print Matrix")
+    printMatrix(X)
+    print("Vector")
+    print(V)
+    V = V[1:len(V)-1]
+    print("New V:")
+    print(V)
+    '''
+
     result = []
-    for rowIndex in range(0,len(X)+1):
+    for rowIndex in range(0,len(V)):
         if rowIndex != 0:
             row = X[rowIndex]
             localResult = mpfr(0)
@@ -93,6 +107,7 @@ def matrixVectorMultiplication(X, V):
     return result
 
 def vectorSubstraction(x,y):
+    x = x[1:len(x)-1]
     return [mpfr(xi-yi) for xi,yi in zip(x,y)]
 
 def LIPUPKsum(L,U,i,k):
@@ -124,14 +139,67 @@ def LU(n,A,b):
             U[k][j] = (A[k][j] - LKPUPJsum(L,U,j,k))/L[k][k]
     return (L,U)
 
+def freeTerms(A):
+    b = newVector(len(A[0]))
+    for i in range(1,len(A[0])):
+        b[i] = mpfr(0)
+        for j in range(1,len(A[0])):
+            b[i] = b[i] + A[i][j]
+    return b
+
+def printVector(V):
+    print('-----')
+    toPrint = []
+    for i in range(1,len(V)-1):
+        toPrint.append(V[i])
+        #print(V[i])
+    print(toPrint)
+    print('-----')
+    #return toPrint
+
+def LIKYKsum(i,L,y):
+    toReturnSum = mpfr(0)
+    for k in range(1,i):
+        toReturnSum += L[i][k]*y[k]
+    return toReturnSum
+
+def solveY(b,L):
+    n = len(L[0])
+    y = newVector(n-1)
+    for i in range(1,n):
+        y[i] = (b[i] - LIKYKsum(i,L,y))/L[i][i]
+    return y
+
+def UIKXKsum(i,U,x):
+    toReturnSum = mpfr(0)
+    for k in range(i+1,len(x)):
+        toReturnSum = toReturnSum + U[i][k]*x[k]
+    return toReturnSum
+
+def solveX(y,U):
+    n = len(y)
+    x = newVector(n-1)
+    for i in range(n-1,0,-1):
+        #print(x[i])
+        x[i] = y[i] - UIKXKsum(i,U,x)
+    return x
+
 def main():
     n = 3
     p = 2
-    b = []
+    '''
+    LU Method
+    '''
     A = combinationMatrix(n,p)
+    b = freeTerms(A)
     (L,U) = LU(n,A,b)
-    printMatrix(A)
-    printMatrix(multiplyMatrix(L,U))
+    y = solveY(b,L)
+    x = solveX(y,U)
+    printVector(vectorSubstraction(b,matrixVectorMultiplication(A,x)))
+    '''
+    Cholesky
+    '''
+    
 
 if __name__ == "__main__":
     main()
