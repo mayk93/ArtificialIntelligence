@@ -34,9 +34,11 @@ def factorial(n):
 
 def combinations(n,k):
     if n == 0 and k == 0:
-        return 0
+        return mpfr(0)
     if n >= k:
         return factorial(n)/(factorial(n-k)*factorial(k))
+    else:
+        return mpfr(0)
 
 def printMatrix(matrix):
     print("---------------")
@@ -50,16 +52,19 @@ def printMatrix(matrix):
     print("---------------")
 
 def transposeMatrix(matrix):
-    matrixT = newMatrix(len(matrix[0]))
-    for i in range(1,len(matrixT[0])):
-        for j in range(1,len(matrixT[0])):
+    n = len(matrix[0])-1
+    matrixT = newMatrix(n)
+    for i in range(1,n+1):
+        for j in range(1,n+1):
             matrixT[i][j] = matrix[j][i]
-    return AT
+    return matrixT
 
 def combinationMatrix(n,p):
     A = newMatrix(n)
     for i in range(1,n+1):
         for j in range(1,n+1):
+            if(combinations(p+j,i) == None):
+                print("Returned None for ",i,p)
             A[i][j] = combinations(p+j,i)
     return A
 
@@ -144,6 +149,11 @@ def freeTerms(A):
     for i in range(1,len(A[0])):
         b[i] = mpfr(0)
         for j in range(1,len(A[0])):
+            if(b[i] == None or A[i][j] == None):
+                print("b[",i,"]:",b[i])
+                print("A[",i,"][",j,"]:",A[i][j])
+                print(A)
+                printMatrix(A)
             b[i] = b[i] + A[i][j]
     return b
 
@@ -184,22 +194,69 @@ def solveX(y,U):
         x[i] = y[i] - UIKXKsum(i,U,x)
     return x
 
+def LJKsum(L,j):
+    toReturnSum = mpfr(0)
+    for k in range(1,j-1):
+        toReturnSum = toReturnSum + L[j][k]**2
+    return toReturnSum
+
+def LIKLJKsum(L,i,j):
+    toReturnSum = mpfr(0)
+    for k in range(1,j-1):
+        toReturnSum = toReturnSum + L[i][k]*L[j][k]
+    return toReturnSum
+
+def Cholesky(n,A,b):
+    L = newMatrix(n)
+    for j in range(1,n):
+        for i in range(j+1,n):
+            L[j][j] = math.sqrt( A[j][j] - LJKsum(L,j) )
+            L[i][j] = ((A[i][j])-LIKLJKsum(L,i,j))/L[j][j]
+    return (L,transposeMatrix(L))
+
+def solveCholeskyY(b,L):
+    n = len(L[0])
+    y = newVector(n-1)
+    for i in range(1,n):
+        y[i] = (b[i] - LIKYKsum(i,L,y))/L[i][i]
+    return y
+
+def LKIXKsum(i,L,x,m):
+    toReturnSum = mpfr(0)
+    for k in range(i+1,m):
+        toReturnSum = toReturnSum + L[i][k]*x[k]
+    return toReturnSum
+
+def solveCholeskyX(y,L):
+    n = len(y)
+    x = newVector(n-1)
+    for i in range(n-1,0,-1):
+        x[i] = (y[i] - LKIXKsum(i,L,x,n))/L[i][i]
+    return x
+
 def main():
-    n = 3
+    n = 5
     p = 2
+    A = combinationMatrix(n,p)
+    b = freeTerms(A)
     '''
     LU Method
     '''
-    A = combinationMatrix(n,p)
-    b = freeTerms(A)
+    '''
     (L,U) = LU(n,A,b)
     y = solveY(b,L)
     x = solveX(y,U)
     printVector(vectorSubstraction(b,matrixVectorMultiplication(A,x)))
     '''
+    '''
     Cholesky
     '''
-    
+    '''
+    (L,Lp) = Cholesky(n,A,b)
+    y = solveCholeskyY(b,L)
+    x = solveCholeskyX(y,L)
+    printVector(vectorSubstraction(b,matrixVectorMultiplication(A,x)))
+    '''
 
 if __name__ == "__main__":
     main()
