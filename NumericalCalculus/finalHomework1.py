@@ -63,13 +63,22 @@ def combinationMatrix(n,p):
             A[i][j] = combinations(p+j,i)
     return A
 
+def getColumn(A,columnIndex):
+    column = []
+    for rowIndex in range(1,len(A[0])):
+        column.append(A[rowIndex][columnIndex])
+    return column
+
+def vectorMultiplication(x,y):
+    return sum([mpfr(xi*yi) for xi,yi in zip(x,y)])
+
 def multiplyMatrix(X, Y):
-    n = len(X[0])
-    result = newMatrix(n-1)
-    for i in range(1,n):
-       for j in range(1,n):
-           for k in range(1,n):
-               result[i][j] += X[i][k] * Y[k][j]
+    result = newMatrix(len(X[0])-1)
+    for xRowIndex in range(1,len(X[0])):
+        xRow = X[xRowIndex][1:]
+        for yColumnIndex in range(1,len(Y[0])):
+            yColumn = getColumn(Y,yColumnIndex)
+            result[xRowIndex][yColumnIndex] = vectorMultiplication(xRow,yColumn)
     return result
 
 def matrixVectorMultiplication(X, V):
@@ -104,15 +113,15 @@ def LU(n,A,b):
     m = n+1
     for i in range(1,m):
         L[i][1] = A[i][1]
-    U[1][1] = 1
+    U[1][1] = mpfr(1)
     for j in range(2,m):
         U[1][j] = A[1][j]/L[1][1]
     for k in range(2,m):
         for i in range(k,m):
             L[i][k] = A[i][k] - LIPUPKsum(L,U,i,k)
-    U[k][k] = 1
-    for j in range(k+1,m):
-        U[k][j] = (A[k][j] - LKPUPJsum(L,U,j,k))/L[k][k]
+        U[k][k] = mpfr(1)
+        for j in range(k+1,m):
+            U[k][j] = (A[k][j] - LKPUPJsum(L,U,j,k))/L[k][k]
     return (L,U)
 
 def main():
