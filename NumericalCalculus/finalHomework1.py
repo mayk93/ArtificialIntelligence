@@ -102,7 +102,8 @@ def matrixVectorMultiplication(X, V):
     '''
 
     result = []
-    for rowIndex in range(0,len(V)):
+    #for rowIndex in range(0,len(V)):
+    for rowIndex in range(0,len(V)-1):
         if rowIndex != 0:
             row = X[rowIndex]
             localResult = mpfr(0)
@@ -210,6 +211,13 @@ def Cholesky(n,A,b):
     L = newMatrix(n)
     for j in range(1,n):
         for i in range(j+1,n):
+            '''
+            print(L)
+            printMatrix(L)
+            print(i)
+            print(j)
+            '''
+
             L[j][j] = math.sqrt( A[j][j] - LJKsum(L,j) )
             L[i][j] = ((A[i][j])-LIKLJKsum(L,i,j))/L[j][j]
     return (L,transposeMatrix(L))
@@ -237,7 +245,8 @@ def solveCholeskyX(y,L):
 def main():
     n = 5
     p = 2
-    A = combinationMatrix(n,p)
+    #A = combinationMatrix(n,p)
+    A = [ [mpfr(3),mpfr(2),mpfr(-2)], [mpfr(2),mpfr(3),mpfr(2)], [mpfr(-2),mpfr(2),mpfr(3)] ]
     b = freeTerms(A)
     '''
     LU Method
@@ -251,12 +260,12 @@ def main():
     '''
     Cholesky
     '''
-    '''
-    (L,Lp) = Cholesky(n,A,b)
+
+    (L,Lp) = Cholesky(3,A,b)
     y = solveCholeskyY(b,L)
     x = solveCholeskyX(y,L)
     printVector(vectorSubstraction(b,matrixVectorMultiplication(A,x)))
-    '''
+
 
 if __name__ == "__main__":
     main()
