@@ -242,30 +242,113 @@ def solveCholeskyX(y,L):
         x[i] = (y[i] - LKIXKsum(i,L,x,n))/L[i][i]
     return x
 
+def AIKQIJsum(A,Q,k,j,n):
+    toReturnSum = mpfr(0)
+    for i in range(1,n):
+        toReturnSum = toReturnSum + A[i][k]*Q[i][j]
+    return toReturnSum
+
+def AIKsum(A,k,n):
+    toReturnSum = mpfr(0)
+    for i in range(1,n):
+        toReturnSum = toReturnSum + A[i][k]**2
+    return toReturnSum
+
+def RIKsum(R,k):
+    toReturnSum = mpfr(0)
+    for i in range(1,k-1):
+        toReturnSum = toReturnSum + R[i][k]**2
+    return toReturnSum
+
+def RJKQIJsum(R,Q,k,i):
+    toReturnSum = mpfr(0)
+    for j in range(0,k-1):
+        toReturnSum = toReturnSum + R[j][k]*Q[i][j]
+    return toReturnSum
+
+def QR(n,A,b):
+    Q = newMatrix(n)
+    R = newMatrix(n)
+
+    firstRowOfA = A[1]
+    firstRowOfA = firstRowOfA[1:]
+    R[1][1] = math.sqrt( sum(a**2 for a in A[1][:1]) )
+
+    for i in range(1,n):
+        Q[i][1] = A[i][1]/R[1][1]
+    for k in range(2,n):
+        for j in range(1,k-1):
+            R[j][k] = AIKQIJsum(A,Q,k,j,n)
+        #print(AIKsum(A,k,n)-RIKsum(R,k))
+        R[k][k] = math.sqrt(AIKsum(A,k,n)-RIKsum(R,k))
+        for i in range(1,n):
+            Q[i][k] = mpfr(1/R[k][k])*(A[i][k] * RJKQIJsum(R,Q,k,i))
+    return (Q,R)
+
+def QJIBJsum(Q,b,i,n):
+    toReturnSum = mpfr(0)
+    for j in range(1,n):
+        toReturnSum += Q[j][i]*b[j]
+    return toReturnSum
+
+def solveYQR(Q,b,n):
+    y = newVector(n)
+    #print(y)
+    m = n+1
+    for i in range(1,m):
+        y[i] = QJIBJsum(Q,b,i,m)
+    return y
+
+def RIJXJsum(R,x,i,n):
+    toReturnSum = mpfr(0)
+    for j in range(i+1,n):
+        toReturnSum += R[i][j]*x[j]
+    return toReturnSum
+
+def solveXOR(y,R,n):
+    x = newVector(n)
+    m = n-1
+    x[m] = y[m]/R[m][m]
+    for i in range(m-1,0,-1):
+        x[i] = mpfr(1/R[i][i])*(y[i] - RIJXJsum(R,x,i,n))
+    return x
+
 def main():
-    n = 5
-    p = 2
-    #A = combinationMatrix(n,p)
-    A = [ [mpfr(3),mpfr(2),mpfr(-2)], [mpfr(2),mpfr(3),mpfr(2)], [mpfr(-2),mpfr(2),mpfr(3)] ]
+    n = 20
+    p = 50
+    A = combinationMatrix(n,p)
+    #A = [ [mpfr(3),mpfr(2),mpfr(-2)], [mpfr(2),mpfr(3),mpfr(2)], [mpfr(-2),mpfr(2),mpfr(3)] ]
     b = freeTerms(A)
     '''
     LU Method
     '''
     '''
+    #print(A)
+    #printMatrix(A)
     (L,U) = LU(n,A,b)
     y = solveY(b,L)
     x = solveX(y,U)
+    #print(x)
     printVector(vectorSubstraction(b,matrixVectorMultiplication(A,x)))
     '''
     '''
     Cholesky
     '''
-
+    '''
     (L,Lp) = Cholesky(3,A,b)
     y = solveCholeskyY(b,L)
     x = solveCholeskyX(y,L)
     printVector(vectorSubstraction(b,matrixVectorMultiplication(A,x)))
+    '''
+    '''
+    QR
+    '''
 
+    (Q,R) = QR(3,A,b)
+    y = solveYQR(Q,b,3)
+    x = solveXOR(y,R,3)
+    printVector(vectorSubstraction(b,matrixVectorMultiplication(A,x)))
+    
 
 if __name__ == "__main__":
     main()
