@@ -12,6 +12,8 @@ import datetime
 import re
 import sqlite3
 
+import nltk
+
 """
 Data Base Initialization
 """
@@ -56,6 +58,7 @@ def huffingtonRSSvisit():
     try:
         page = "http://www.huffingtonpost.com/feeds/index.xml"
         sourceCode = opener.open(page).read()
+        # Refactor: Move into one preprocessing function
         try:
             links = re.findall(r'<link.*href=\"(.*?)\"',str(sourceCode))
             for link in links:
@@ -69,10 +72,9 @@ def huffingtonRSSvisit():
                     linesOfInterest = re.findall(r'<p>(.*?)</p>',str(linkSource)) #Note: The preprocessing is very weak
 
                     for line in linesOfInterest:
-
                         if( checkLine(line) ):
-                            print(line)
-                            
+                            processor(line)
+
         except Exception as e:
             print("Exception in RSS conection - In")
             print(str(e))
@@ -80,9 +82,41 @@ def huffingtonRSSvisit():
         print("Exception in RSS conection - Out")
         print(str(e))
 
-'''
+"""
+Analisys
+"""
+
+def multipleEntitiesProcessor(entities):
+    pass
+
+def checkEntity(entities):
+    pass
+
+def processor(data):
+    try:
+        tokenized = nltk.word_tokenize(data)
+        tagged = nltk.pos_tag(tokenized)
+        namedEntities = nltk.ne_chunk(tagged,binary=True)
+
+        entities = re.findall(r'NE\s(.*?)/',str(namedEntities))
+
+        if len(entities) > 1:
+            multipleEntitiesProcessor(entities)
+        elif len(entities) == 0:
+            checkEntity(entities) #Usually, it means the topic didn't change.
+                                  #Example: The Google campus is nice. It is big.
+                                  #For "It is big", the named entity refered to
+                                  #is still the Google campus.
+        else:
+            print("Named: ",entities[0])
+
+    except Exception as e:
+        print("Failed - Processor OUT")
+        print(str(e))
+
+"""
 Main
-'''
+"""
 def main():
     huffingtonRSSvisit()
 
