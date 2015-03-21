@@ -43,6 +43,15 @@ opener.addheaders = [('User-agent','Mozilla/5.0')]
 connection = sqlite3.connect('knowledgeBase.db')
 cursor = connection.cursor()
 
+def checkLine(line):
+    test = True
+    tags = [ '<img width' , '<a href=' ]
+    for tag in tags:
+        if tag in line:
+            test =  False
+            break
+    return test
+
 def huffingtonRSSvisit():
     try:
         page = "http://www.huffingtonpost.com/feeds/index.xml"
@@ -53,16 +62,17 @@ def huffingtonRSSvisit():
                 if ".rdf" in link:
                     pass
                 else:
-                    print("Visiting the link:")
+                    print("Content:")
                     print("###############")
 
                     linkSource = opener.open(link).read()
-                    linesOfInterest = re.findall(r'<p>(.*?)</p>',str(linkSource))
+                    linesOfInterest = re.findall(r'<p>(.*?)</p>',str(linkSource)) #Note: The preprocessing is very weak
 
-                    print("Content:")
                     for line in linesOfInterest:
-                        print(line)
 
+                        if( checkLine(line) ):
+                            print(line)
+                            
         except Exception as e:
             print("Exception in RSS conection - In")
             print(str(e))
