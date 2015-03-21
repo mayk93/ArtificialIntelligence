@@ -1,0 +1,24 @@
+Folosind metodele:
+
+0. Jaccobi relaxata ( Metoda Jacobii se numeste si metoda rotatiilor )
+1. Gauss relaxata
+2. Gradientul Conjugat
+
+De rezolvat: Ax = b
+
+Cu precizia: epsilon = 10**(-10)
+
+Unde: Matricea A are dimensiunea n * n, cu n = 10
+                                           n = 20
+                                           n = 50
+                                           n = 100
+               A[i][i]   = 2
+               A[i][i+1] = 1
+               A[i+1][i] = 1
+               A[i][j]   = 0
+
+      Vectorul termenilor liberi b are b[i] = 1
+
+      A pozitiv definita si simetrica.
+
+Cu metoda rotatiilor sa aproximam valorile proprii.

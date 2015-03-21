@@ -9,13 +9,16 @@ class Application(Frame):
         IV = 16 * '\x00'
         mode = AES.MODE_CBC
         encryptor = AES.new(key, mode, IV=IV)
-        '''
+
         ciphertext = self.InputText.get("1.0",END)
         while len(ciphertext)%16 != 0:
             ciphertext = ciphertext + 'x'
         '''
         sampleText = 'a'*4+'b'*4+'c'*4+'d'*4
         ciphertext = encryptor.encrypt(sampleText)
+        decryptor = AES.new(key, mode, IV=IV)
+        plain = decryptor.decrypt(ciphertext)
+        '''
         decryptor = AES.new(key, mode, IV=IV)
         plain = decryptor.decrypt(ciphertext)
         self.OutputText.delete(0.0,END)
