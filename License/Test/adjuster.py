@@ -13,8 +13,7 @@ import math
 verbose = False
 ITERATIONS = 100
 MULTIPLICATIVE_CORRECTION = 10000
-ADDITIVE_CORRECTION = 500
-INITIAL_TAP_THRESHOLD = 0.010 * MULTIPLICATIVE_CORRECTION + ADDITIVE_CORRECTION
+INITIAL_TAP_THRESHOLD = 0.015 * MULTIPLICATIVE_CORRECTION
 FORMAT = pyaudio.paInt16
 SHORT_NORMALIZE = (1.0/32768.0)
 CHANNELS = 2
@@ -127,6 +126,3 @@ class TapTester(object):
                     self.tap_threshold *= 0.9
             finalThreshold = finalThreshold + self.tap_threshold
         return finalThreshold
-
-thresholdAdjuster = TapTester()
-print(thresholdAdjuster.adjust())

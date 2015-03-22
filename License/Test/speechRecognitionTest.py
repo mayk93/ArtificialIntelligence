@@ -14,7 +14,6 @@ def getThreshold():
 def initialize():
     Recognizer = SpeechRecognition.Recognizer()
     Recognizer.energy_threshold = getThreshold()
-    print(Recognizer.energy_threshold)
     return Recognizer
 
 def listen(Recognizer):
