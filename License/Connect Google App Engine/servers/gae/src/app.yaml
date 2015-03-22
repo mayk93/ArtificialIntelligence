@@ -1,0 +1,48 @@
+application: unitygae
+version: 1
+runtime: python
+api_version: 1
+
+admin_console:
+  pages:
+  - name: MyAdmin 
+    url: /_ah/myadmin/game
+  - name: My Memcache
+    url: /admin/memcache
+
+error_handlers:
+- file: templates/error_handlers/default_error.html
+
+- error_code: over_quota
+  file: templates/error_handlers/default_error.html
+
+- error_code: dos_api_denial
+  file: templates/error_handlers/default_error.html
+
+- error_code: timeout
+  file: templates/error_handlers/default_error.html
+
+handlers: 
+- url: /static
+  static_dir: static
+
+- url: /(.*\.(xml|txt|unity3d|htm|html))
+  static_files: static/\1
+  upload: static/(.*\.(xml|txt|unity3d|htm|html))
+
+- url: /work/.*
+  script: main.py
+  login: admin
+  
+- url: /_ah/myadmin/.*
+  script: main.py
+  login: admin
+
+- url: /admin/.*
+  script: $PYTHON_LIB/google/appengine/ext/admin
+  login: admin
+  
+- url: /.*
+  script: main.py
+  
+########################################################################################################################

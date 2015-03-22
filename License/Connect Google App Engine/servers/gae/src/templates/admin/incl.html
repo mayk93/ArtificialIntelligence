@@ -1,0 +1,15 @@
+{% macro field_with_errors(field) %}
+<div style="margin:3px">
+	<span style="display:inline-block;width:150px;text-align:right;vertical-align:top;padding-right:5px;">
+		{{ field.label }}
+	</span>
+	<span>
+		{{ field }}
+	</span>	
+	<span style="color:red">
+		{% if field.errors %}
+			{{ field.errors[0] }}
+		{% endif %}	
+	</span>
+</div>
+{% endmacro %}

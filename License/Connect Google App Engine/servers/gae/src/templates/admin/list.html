@@ -1,0 +1,35 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<form action="" method="post">
+	<input type="submit" value="delete" name="del_button">
+	<input type="submit" value="edit" name="edit_button">
+	<input type="submit" value="add new" name="new_button">
+	{% if items %}
+		<input type="hidden" value="{{ items|count }}" name="item_count">
+		<table class="entities">
+			<tr>
+				<th>&nbsp;</th>				
+				{% for label in item_labels %}
+				<th>
+					{{ label }}
+				</th>
+				{% endfor %}
+			</tr>
+		{% for item in items %}
+			<tr class="{{ loop.cycle('odd', 'even') }}">
+				{% set rowloop = loop %}
+				{% for field in item %}
+				<td>
+					{% if loop.first: %}
+						<input type="checkbox" value="{{ field }}" name="key{{ rowloop.index }}" id="key{{ rowloop.index }}">
+					{% else %}
+						{{ field }}
+					{% endif %}
+				</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+		</table> 
+	{% endif %}
+</form>	
+{% endblock %}

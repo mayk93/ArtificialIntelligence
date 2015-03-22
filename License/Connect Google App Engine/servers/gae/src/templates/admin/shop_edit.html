@@ -1,0 +1,14 @@
+{% extends 'admin/base.html' %}
+{% from 'admin/incl.html' import field_with_errors %}
+{% block content %}
+	<p>Player [{{ player_name }}] owns:</p>
+	<form method="post" action="">
+		{% for field in form %}
+			{{ field_with_errors(field) }}
+		{% endfor %}		
+		<div style="padding:10px 0 10px 150px;border-bottom:1px solid #333">
+			<input type="hidden" value="{{ edit_key }}" name="edit_key" />
+			<input type="submit" value="Save" name="save_button" />
+		</div>
+	</form>
+{% endblock %}

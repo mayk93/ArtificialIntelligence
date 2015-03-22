@@ -1,0 +1,16 @@
+queue:
+- name: normalmail
+  rate: 2000/d
+  max_concurrent_requests: 1
+  retry_parameters:
+    task_retry_limit: 1
+    task_age_limit: 1d
+- name: prioritymail
+  rate: 2000/d
+  max_concurrent_requests: 1
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 2d
+- name: default
+  max_concurrent_requests: 1
+  rate: 1/s

@@ -1,0 +1,16 @@
+<script type='text/javascript'>
+// <![CDATA[
+	function checkemail(e,b){if (/.+@.+\..+/.test(document.getElementById(e).value))return true;document.getElementById(b).style.display = 'block';return false;}
+// ]]></script>
+Buy My Awesome Game for <span style="font-weight:bold;color:#fffe8b">$9 US</span>.
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" onsubmit="return checkemail('accemail','errmsg');">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="CHANGE_THIS_TO_YOUR_BUTTON_ID">
+<input type="hidden" name="on0" value="Register E-mail" />
+<p style="font-size: 0.8em;"><span style="color:#ff4549;font-weight:bold;">IMPORTANT!</span> Please enter the e-mail address under which you would like to register the game. Enter a friend's address to purchase as a gift. You should recieve an e-mail in a few minutes after purchase, but give it up to 24 hours and remember to check your spam if you do not see an e-mail from us.</p>
+E-mail Address:<input id="accemail" style="width: 200px;font-size: 1.1em;margin:0;padding:3px;border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;" type="text" name="os0" maxlength="60" />
+<div id="errmsg" style="margin:0 0 20px 0;font-weight:bold;font-size: 1.1em; display:none; color:#ff4325">Please enter a valid e-mail address.</div>
+<input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" style="margin-left:25px;">
+<img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+<p style="font-size: 0.7em;color:#555;margin-top:10px">All major credit cards are accepted! PayPal let you use your<br />bank account as well. No prior account is needed.</p>

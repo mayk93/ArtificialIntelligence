@@ -1,0 +1,48 @@
+<p>This package shows you how to connect a  game to a server running on <a href="http://code.google.com/appengine/">Google App Engine&reg;  (GAE)</a>. The server scripts for this package was written in  Python and uses the GAE API, jinja2, wtforms, ndb and webapp2. The client  side scripts are all done in C#.</p>
+<p>Google App Engine&reg; enables you to build and host web apps on the same systems that power Google&reg; applications. App engine offers fast development and deployment; simple administration, with no need to worry about hardware, patches or backups; and effortless scalability. Depending on your game's load you could host the server side for free or for a very low monthly fee. <a href="http://code.google.com/appengine/docs/quotas.html">Click here</a> for more information on GAE billing and free quotas.</p>
+<p>Visit <a href="http://plyoung.com/forums/">http://plyoung.com/forums/</a> or  <a href="http://plyoung.wordpress.com/">http://plyoung.wordpress.com/</a> for support. Check out <A HREF="http://www.battlemass.com/">Battlemass</A> for a sample of a full game making use of code from this package. Visit <a href="http://unitygae.appspot.com/sample.htm">this link</a> for a webplayer demo of the included sample scene.</p>
+<p>&nbsp;</p>
+<p><strong>This package features the following  systems:</strong></p>
+<p>* Account system:<br>
+Players can Register, Login, and  Initiate Password Recovery from within the game client. There is also a sample of how to save a  player's settings to the server and load it when the player login;  this could even be adapted for a system that saves game state in the  &ldquo;cloud&rdquo;.</p>
+<p>* Friends system:<br>
+Friends list. List, Add and remove  friends.</p>
+<p>* Chat system:<br>
+Public channel for all players and  private chat channels between 2 players. Also List online players.</p>
+<p>* Simple News and Advert system:<br>
+Sample game admin section to add news  and adverts and how to show them client side.</p>
+<p>* Payment system:<br>
+  Check in-game if player purchased game.  Use of keys to unlock game. Admin side to manage ownership and  generate game keys. Sample of handling PayPal and auto-generating  keys and sending via e-mail when payment confirmed.</p>
+<p>&nbsp;</p>
+<p><strong>Getting started</strong></p>
+<p>Head to  <a href="http://code.google.com/appengine/downloads.html">http://code.google.com/appengine/downloads.html</a> and grab the latest  SDK for Python. You obviously need to have a working Python  installed on your system for this to work. Get version 2.5 or 2.7 of Python <a href="http://www.python.org/">http://www.python.org/</a></p>
+<p>You do not have to create an app on GAE  yet since everything can be tested on your local machine till you are ready to deploy, but when you are ready you will go to <a href="https://appengine.google.com/">https://appengine.google.com/</a> to create and manage your online app.</p>
+<p>This documentation assumes you know how to work with GAE. If you don't you will have to read through the GAE docs first. <a href="http://code.google.com/appengine/docs/whatisgoogleappengine.html">Read  this</a> so you get an idea of  what GAE is all about and <a href="http://code.google.com/appengine/docs/python/gettingstarted/">this to learn</a> how to get strated with using GAE and Python.</p>
+<p>&nbsp;</p>
+<p><strong>Setting up and running the sample</strong></p>
+<p>Most of this package should be very  familier. There is a sample scene and the scripts folder with some C# scripts. The standard  Unity GUI  was used to create the sample scene.</p>
+<p> The package also includes the Python  scripts for GAE. These are located under &quot;servers/gae/src&quot;. You may copy these files anywhere you  like. They do NOT have to be in the asset folder of your project.</p>
+<p>Open the GAE launcher and choose to add  an existing project. </p>
+<p>Point to the &quot;servers/gae/src&quot; folder (or wherever you copied it to) and  click &quot;add&quot;. Make a note of the port (it will be  something like 8080,8081,8082,etc.)</p>
+<p>The app should now apear in the  launcher. Select it and click on Edit-&gt;application settings. Under &quot;external comamnd line  flags&quot; add &quot;-a 0.0.0.0&quot; (this is optional but will allow you to test the app from more than just your  local machine). Now you are ready to click that big run button to start the &quot;server&quot;. Check the &quot;Logs&quot; button to see a console and to spot any errors while running GAE.</p>
+<p>You need to make one change in the code before running the test scene. On the client side you need to open  &quot;game.cs&quot;, located under &quot;Connect Google App Engine/scripts&quot;, and change the <strong>ServerUrl</strong> to that of the machine that is hosting GAE, and before you  build a release copy the game you would want to change that to the appspot.com URL of your app.</p>
+<p>&nbsp;</p>
+<p><strong>Admin</strong></p>
+<p>There is an admin area where you can  edit News, Adverts, GameKeys and even set if a player owns the game or not. You will see a menu  option to &quot;MyAdmin&quot; in your GAE Dashboard when deplyed. This does NOT work on the development dashboard. For local host you need to manually  enter http://localhost:8080/_ah/myadmin/game to access it (correct localhost:8080 as needed).</p>
+<p>- The News option allows you to add and  edit news text.</p>
+<p>- The Adverts option allows you to add  and remove URLs to images. When the game client login the server will choose one at random  from these and tell the client to load that image. You obvioulsy want to add images that are the same width and height you need on the client side and in JPG or PNG format.</p>
+<p>- The Shop option allows you to search  for a login email (you can find these by checking in Datastore Viewer) and then you can  set if that player owns the game or not.</p>
+<p>- The Gamekeys section can be used to  check up on generated keys or to even create new keys if you wanted to generate some keys to  send to reviewers. Click on &quot;Add New&quot; and then &quot;Create&quot; and a key will be generated (you do not  have to fill any of the fields).</p>
+<p>&nbsp;</p>
+<p><strong>Payment system</strong></p>
+<p>The package includes code that shows you how to work with a Paypal base payment system. There is a handler that works with  PayPal IPN. Check out payment.py and make changes where needed, like the parts marked with  YOUR_PAYPAL_EMAIL_HERE, YOUR_EMAIL and GAME_NAME_HERE.</p>
+<p>Make sure to read more about PayPal IPN  and to first test in Sandbox before you make this life.<br>
+  <a href="https://www.paypal.com/ipn">https://www.paypal.com/ipn</a><br>
+  <a href="https://developer.paypal.com/">https://developer.paypal.com/</a></p>
+<p>PayPal buttons and account setup is  beyond the scope of this readme. Please read up on it on the PayPal docs. The URL you will use with  the button (for IPN) will be something like this https://name_of_your_app.appspot.com/pay_pp/</p>
+<p>The payment system will generate a 12  character code and e-mail it to the e-mail account of the payer (or the e-mail he entered if you use  the sample button code below where a buyer would first enter an e-mail address before pressing the pay  button).</p>
+<p>The sample code for a PayPal button is located in the <a href="paypal_sample_button.txt">paypal_sample_button.txt</a> file.</p>
+<p>&nbsp;</p>
+<p><strong>-- eof --</strong></p>
+<p><BR>
+</p>

@@ -1,0 +1,14 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<form action="" method="post">
+	<span style="display:inline-block;width:150px;text-align:right;vertical-align:top;padding-right:5px;">
+		{{ form['email'].label }}
+	</span>
+	<span>
+		{{ form['email'] }}
+	</span>	
+	<span>
+		<input type="submit" value="find" name="find_button">
+	</span>	
+</form>	
+{% endblock %}
