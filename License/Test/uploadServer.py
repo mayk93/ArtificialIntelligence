@@ -41,7 +41,7 @@ def SaveFile(name,fileSocket):
         print("Download complete.")
     fileSocket.close()
 def setup():
-    host = LOCAL_HOST
+    host = GCE_SERVER
     port = DEFAULT_PORT
     serverSocket = socket.socket()
     serverSocket.bind((host,port))
