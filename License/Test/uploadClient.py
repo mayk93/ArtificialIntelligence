@@ -42,12 +42,14 @@ def setup():
             print("File size:",fileSize)
 
             print("Sending.")
-            bytesToSend = file.read(MAX_SIZE)
-            clientSocket.send(bytesToSend)
-            print("Sent initial data")
-            while bytesToSend != "":
+            with open(fileName,'rb') as file:
                 bytesToSend = file.read(MAX_SIZE)
                 clientSocket.send(bytesToSend)
+                print("Sent initial data")
+                while bytesToSend != "":
+                    bytesToSend = file.read(MAX_SIZE)
+                    clientSocket.send(bytesToSend)
+                    print("Sent additional data")
             print("Sent!")
         else:
             print("File does not exist.")
