@@ -1,5 +1,5 @@
 '''
-File Server
+Upload Server
 '''
 #Libraries
 import socket
@@ -9,7 +9,7 @@ import os
 #Variables
 LOCAL_HOST = '127.0.0.1'
 GCE_SERVER = '104.155.2.110'
-DEFAULT_PORT = 5000
+DEFAULT_PORT = 5765
 MAX_SIZE = 1024
 
 #Functions
@@ -41,7 +41,7 @@ def SaveFile(name,fileSocket):
         print("Download complete.")
     fileSocket.close()
 def setup():
-    host = GCE_SERVER
+    host = LOCAL_HOST
     port = DEFAULT_PORT
     serverSocket = socket.socket()
     serverSocket.bind((host,port))
