@@ -60,6 +60,10 @@ class Matrix:
                 self.matrix[i+1][i] = 1
             except:
                 pass
+    def testMatrix(self):
+        for i in range(0,self.size):
+            for j in range(0,self.size):
+                self.matrix[i][j] = i*10+j
     '''
     The iterate will iterate over the matrix
     but with mathematical notation:
@@ -74,27 +78,37 @@ class Matrix:
             columnStop  = rowStop
             for i in range(rowStart,rowStop):
                 for j in range(columnStart,columnStop):
-                    print(self.matrix[i][j],end='')
+                    print(str(self.matrix[i][j])+" ",end='')
                 print("")
         else:
             print("Bad index:",badIndex)
             return -1
+    def getLength(self):
+        maxNumerOfDigits = 0
+        for row in self.matrix:
+            currentNumberOfDigits = 0
+            for number in row:
+                currentNumberOfDigits = currentNumberOfDigits + len(str(number))
+            if currentNumberOfDigits > maxNumerOfDigits:
+                maxNumerOfDigits = currentNumberOfDigits
+        return maxNumerOfDigits
     def displayMatrix(self):
-        for k in range(0,self.size):
+        LENGTH = self.getLength()
+        for k in range(0,LENGTH+self.size):
             print("=",end='')
         print("")
         for i in range(0,self.size):
             for j in range(0,self.size):
-                print(self.matrix[i][j],end='')
+                print(str(self.matrix[i][j])+" ",end='')
             print("")
-        for k in range(0,self.size):
+        for k in range(0,LENGTH+self.size):
             print("=",end='')
         print("")
 #Main
 def main():
     A = Matrix(12)
     A.displayMatrix()
-    A.fillMatrix()
+    A.testMatrix()
     A.displayMatrix()
     A.iterate(6,8,4,8)
 
