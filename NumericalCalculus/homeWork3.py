@@ -25,7 +25,7 @@ def freeTerms(size):
     newB = []
     for i in range(0,size):
         newB.append(1)
-    return newB]
+    return newB
 '''
 This method should be refactored to cgeck for negatives
 '''
@@ -41,7 +41,7 @@ def isZero(listToCheck):
 """
 This class with implement square matrices
 """
-def Matrix:
+class Matrix:
     def __init__(self,size):
         self.size = size
         self.matrix = newEmptyMatrix(size)
@@ -52,17 +52,51 @@ def Matrix:
     def fillMatrix(self):
         for i in range(0,self.size):
             self.matrix[i][i]   = 2
-            self.matrix[i][i+1] = 1
-            self.matrix[i+1][i] = 1
+            try:
+                self.matrix[i][i+1] = 1
+            except:
+                pass
+            try:
+                self.matrix[i+1][i] = 1
+            except:
+                pass
     '''
     The iterate will iterate over the matrix
     but with mathematical notation:
     1 through n would translate to 0 to n-1 ( both ends included )
     '''
-    def iterate(rowStart,rowStop,columnStart,columnStop):
-        isZero,badIndex = isZero([rowStart,rowStop,columnStart,columnStop])
-        if not isZero:
-            pass
-        else
+    def iterate(self,rowStart,rowStop,columnStart,columnStop):
+        isZeroTest,badIndex = isZero([rowStart,rowStop,columnStart,columnStop])
+        if not isZeroTest:
+            rowStart = rowStart-1
+            rowStop  = rowStop
+            columnStart = rowStart-1
+            columnStop  = rowStop
+            for i in range(rowStart,rowStop):
+                for j in range(columnStart,columnStop):
+                    print(self.matrix[i][j],end='')
+                print("")
+        else:
             print("Bad index:",badIndex)
             return -1
+    def displayMatrix(self):
+        for k in range(0,self.size):
+            print("=",end='')
+        print("")
+        for i in range(0,self.size):
+            for j in range(0,self.size):
+                print(self.matrix[i][j],end='')
+            print("")
+        for k in range(0,self.size):
+            print("=",end='')
+        print("")
+#Main
+def main():
+    A = Matrix(12)
+    A.displayMatrix()
+    A.fillMatrix()
+    A.displayMatrix()
+    A.iterate(6,8,4,8)
+
+if __name__ == '__main__':
+    main()
