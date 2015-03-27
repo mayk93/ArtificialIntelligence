@@ -1,0 +1,4 @@
+import gmpy2
+from gmpy2 import mpz,mpq,mpfr,mpc
+
+PRECISION = 10**-13

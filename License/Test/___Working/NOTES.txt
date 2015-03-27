@@ -1,0 +1,3 @@
+This works as a communication between a local host server and client.
+Between local host client and google cloud server, there is no communication atm.
+Must check if this is due to the server or the cloud connection.
