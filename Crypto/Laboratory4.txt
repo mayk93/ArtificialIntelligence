@@ -1,0 +1,10 @@
+I.
+    https://www.youtube.com/watch?v=kYasb426Yjk
+II.
+    29189 36805 9619 15817 4790 26692 17953 36805 12015 23053 9619 37701 35423 12015 25368 9619 15142 37701 4790 36805 9619 29189 12015 14193 35423
+
+    https://www.cs.drexel.edu/~introcs/Fa11/notes/10.1_Cryptography/RSA_Express_EncryptDecrypt.html
+
+III.
+    e = 51719
+    Decryption: Ron Rivest Adi Shamir Leonard Adleman
