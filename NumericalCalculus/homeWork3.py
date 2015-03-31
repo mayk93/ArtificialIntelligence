@@ -144,7 +144,7 @@ class Matrix:
                             pass
             return b;
 
-def metodaJacobi(A,m,p):
+def JacobbiMethod(A,m,p):
     i = 0
     j = 0
     u0 = 0
@@ -164,7 +164,7 @@ def metodaJacobi(A,m,p):
     Y = Matrix(m,1)
     Z0 = Matrix(m,1)
 
-    for k in range(1,p): #Here might be p, not p+1
+    for k in range(1,p):
         sigma = mpfr(t / (p + 1) * mpfr(k))
         As = Matrix(m,m)
         As = A.multiply(sigma);
@@ -173,15 +173,15 @@ def metodaJacobi(A,m,p):
         u = 0;
         eps = mpfr(10**(-10))
 
-        for i in range(i,m): #Here might be m, not pm+1
+        for i in range(i,m):
             X.matrix[i][0] = 0
         while er > eps:
             u += 1
             Y = B.multiply(X)
             Y = Y.add(bs)
             sum = mpfr(0)
-            for i in range(i,m): #Here might be m, not pm+1
-                for j in range(j,m): #Here might be m, not pm+1
+            for i in range(i,m):
+                for j in range(j,m):
                     sum += A.matrix[i][j] * (Y.matrix[j][1] - X.matrix[j][1])*(Y.matrix[i][1] - X.matrix[i][1])
             er = sqrt(sum);
             X = Y;
@@ -195,7 +195,64 @@ def metodaJacobi(A,m,p):
             sigma0 = sigma
     print("\n ====================> Relaxed Jacobi Method <==================== \n")
     print("\n ===> Parametrul optim de relaxare:", sigma0)
-    print("\n ===> Iterations:",u0)
+    print("Solution:")
+    X0.displayMatrix();
+    print("\n ===> A * X0 - Test:")
+    (A.multiplyMatrix(X0)).displayMatrix()
+
+def gaussSeidelMethod(A,m,p):
+    i = 0
+    j = 0
+    er = mpfr(0)
+    sigma0 = mpfr(0);
+    u0 = 0
+    t = mpfr(0)
+    mi = mpfr(0)
+    mi = A.norma();
+    t = mpfr(mpfr(2.0) / mi)
+    B = Matrix(m,m)
+    I = Matrix(m,m)
+    b = Matrix(m,1)
+    bs = Matrix(m,1)
+    X = Matrix(m,1)
+    Y = Matrix(m,1)
+    Z0 = Matrix(m,1)
+    for k in range(1,p):#Might be p+1
+        sigma = mpfr((2.0 / (p + 1))* mpfr(k))
+        As = Matrix(m,m)
+        As = A.multiply(sigma);
+        B = I.substract(As);
+        u = 0;
+        eps = mpfr(10**(-10))
+        for i in range(1,m):#Might be m+1
+            X.matrix[i][0] = 0;
+            Y.matrix[i][0] = 0;
+        while er > eps:
+            u += 1
+            for i in range(1,m):
+                sum1 = mpfr(0)
+                sum2 = mpfr(0)
+                for j in range(1,i): #Might be i-1
+                    sum1 += B.matrix[i][j] * Y.matrix[j][1];
+                for j in range(i,m):
+                    sum2 += B.matrix[i][j] * X.matrix[j][1];
+                Y.matrix[i][1] = sum1 + sum2 + b.matrix[i][1] * sigma;
+            sum = mpfr(0)
+            for i in range(1,m):
+                for j in range(1,m):
+                    sum += A.matrix[i][j] * (Y.matrix[j][1] - X.matrix[j][1])*(Y.matrix[i][1] - X.matrix[i][1]);
+            er = sqrt(sum);
+            X = Y;
+        if k == 1:
+            u0 = u
+            X0 = X
+            sigma0 = sigma
+        elif u < u0:
+            u0 = u
+            X0 = X
+            sigma0 = sigma
+    print("\n ====================> Relaxed Jacobi Method <==================== \n")
+    print("\n ===> Parametrul optim de relaxare:", sigma0)
     print("Solution:")
     X0.displayMatrix();
     print("\n ===> A * X0 - Test:")
@@ -208,7 +265,8 @@ def main():
     A = Matrix(m,m)
     A.fillMatrix()
     A.displayMatrix()
-    metodaJacobi(A,m,p)
+    #JacobbiMethod(A,m,p)
+    gaussSeidelMethod(A,m,p)
 
 if __name__ == '__main__':
     main()
