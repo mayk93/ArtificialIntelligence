@@ -131,6 +131,18 @@ class Matrix:
                 for j in range(1,self.columns):
                     b.matrix[i][j] = self.matrix[i][j] + x.matrix[i][j];
             return b;
+    def multiplyMatrix(self,x):
+    	b = Matrix(self.rows,self.columns)
+    	if self.columns == x.rows:
+            for i in range(1,self.rows):
+                for j in range(1,self.columns):
+                    b.matrix[i][j] = 0
+                    for k in range(1,self.columns):
+                        try:
+                            b.matrix[i][j] += self.matrix[i][k] * x.matrix[k][j];
+                        except:
+                            pass
+            return b;
 
 def metodaJacobi(A,m,p):
     i = 0
@@ -159,8 +171,10 @@ def metodaJacobi(A,m,p):
         B = I.substract(As);
         bs = b.multiply(sigma);
         u = 0;
+        eps = mpfr(10**(-10))
+
         for i in range(i,m): #Here might be m, not pm+1
-            X.matrix[i][1] = 0
+            X.matrix[i][0] = 0
         while er > eps:
             u += 1
             Y = B.multiply(X)
@@ -185,13 +199,14 @@ def metodaJacobi(A,m,p):
     print("Solution:")
     X0.displayMatrix();
     print("\n ===> A * X0 - Test:")
-    (A.multiply(X0)).displayMatrix()
+    (A.multiplyMatrix(X0)).displayMatrix()
 
 #Main
 def main():
     m = 10
     p = 10
     A = Matrix(m,m)
+    A.fillMatrix()
     A.displayMatrix()
     metodaJacobi(A,m,p)
 
