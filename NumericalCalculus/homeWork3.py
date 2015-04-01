@@ -65,7 +65,7 @@ def main():
     A.display()
     B.display()
     C = A.multiplyMatrix(B)
-    C.display()    
+    C.display()
 
 
 if __name__ == '__main__':

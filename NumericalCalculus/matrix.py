@@ -97,18 +97,24 @@ class Matrix:
     '''
     def getRow(self,rowIndex):
         toReturnRow = []
+        auxiliary = []
         for element in self.matrix:
             if element.rowNumber == rowIndex:
-                toReturnRow.append(copy.deepcopy(element.value))
+                auxiliary.append(copy.deepcopy(element))
+        auxiliary.sort(key=lambda x: x.columnNumber)
+        toReturnRow = [copy.deepcopy(element.value) for element in auxiliary]
         return toReturnRow
     '''
     Order by row for getColumn
     '''
     def getColumn(self,columnIndex):
         toReturnColumn = []
+        auxiliary = []
         for element in self.matrix:
             if element.columnNumber == columnIndex:
-                toReturnColumn.append(copy.deepcopy(element.value))
+                auxiliary.append(copy.deepcopy(element))
+        auxiliary.sort(key=lambda x: x.rowNumber)
+        toReturnColumn = [copy.deepcopy(element.value) for element in auxiliary]
         return toReturnColumn
     '''
     ===========================================================================
@@ -118,10 +124,8 @@ class Matrix:
     def multiplyMatrix(self,otherMatrix):
         toReturn = Matrix(self.numberOfRows,otherMatrix.numberOfColumns)
         if self.numberOfColumns == otherMatrix.numberOfRows:
-            resultRowIndex = 0
             for selfRowIndex in range(0,self.numberOfRows):
                 selfCurrentRow = self.getRow(selfRowIndex)
-                resultColumnIndex = 0
                 for otherColumnIndex in range(0,otherMatrix.numberOfColumns):
                     otherCurrentColumn = otherMatrix.getColumn(otherColumnIndex)
                     currentResult = multiplyAndAdd(selfCurrentRow,otherCurrentColumn)
@@ -131,9 +135,10 @@ class Matrix:
                     print("Column [B]:",otherCurrentColumn)
                     print("Result:",currentResult)
 
-                    toReturn.insert(resultRowIndex,resultColumnIndex,currentResult)
-                    resultColumnIndex += 1
-                resultColumnIndex += 1
+                    toReturn.insert(selfRowIndex,otherColumnIndex,currentResult)
+
+                    print("The resulting matrix, so far:")
+                    toReturn.display()
             return toReturn
         else:
             print("Bad number of rows or columns, in method 'multiplyMatrix'.")
