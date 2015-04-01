@@ -141,6 +141,12 @@ class Matrix:
         else:
             print("Bad number of rows or columns, in method 'multiplyMatrix'.")
             return None
+    def scalarMultiplication(self,scalar):
+        toReturn = Matrix(self.numberOfRows,self.numberOfColumns)
+        for i in range(0,self.numberOfRows):
+            for j in range(0,self.numberOfColumns):
+                toReturn.insert(i,j,copy.deepcopy(scalar*self.at(i,j)))
+        return toReturn
     def addMatrix(self,otherMatrix):
         if sameSize(self,otherMatrix):
             toReturn = Matrix(self.numberOfRows,otherMatrix.numberOfColumns)

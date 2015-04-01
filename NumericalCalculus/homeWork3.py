@@ -163,6 +163,60 @@ def GaussSiedel(m,A,a,epsilon,p):
     result.display()
     print("====================")
 
+def ConjugatedGradient(m,A,a,epsilon,p):
+    '''
+    The following 5 lines are not part of the algorithm per se. They are helpers.
+    '''
+    VECTOR = 1 # See above. Here, it is 1 because we use math notation
+    nOptim = 0
+    xOptim = Matrix(m,m)
+    mathP = p+1 #We use mathP (p+1) because the algorithm is written in mathematical notation (k = 1,p). By employing the matrix API, we can directly use the mathematical notation
+    mathM = m+1 #We use mathM for the same reason we use mathP. It is used only for iterations, not defining sizes
+
+    X = Matrix(m,VECTOR)
+    Y = Matrix(m,VECTOR)
+    r = Matrix(m,VECTOR)
+    aux = Matrix(m,VECTOR)
+    v = Matrix(m,VECTOR)
+
+    for i in range(1,mathM):
+        X.mathInsert(i,VECTOR,1)
+    aux = copy.deepcopy(A.multiplyMatrix(X))
+    r = copy.deepcopy(a.substractMatrix(aux))
+    v = copy.deepcopy(r)
+    for i in range(1,mathM):
+        sum1 = 0
+        for j in range(1,mathM):
+            sum1 = sum1 + r.mathAt(j,1)**2
+        av = Matrix(m,VECTOR)
+        av = copy.deepcopy(A.multiplyMatrix(v))
+        sum2 = 0
+        for j in range(1,mathM):
+            sum2 = sum2 + av.mathAt(j,1) * v.mathAt(j,1)
+        ai = 0
+        ai = sum1 / sum2+(10**(-10))
+        aux = copy.deepcopy(v.scalarMultiplication(ai))
+        aux = copy.deepcopy(aux.addMatrix(X))
+        Y = copy.deepcopy(aux)
+        aux = copy.deepcopy(A.multiplyMatrix(Y))
+        r = copy.deepcopy(a.substractMatrix(aux))
+        sum3 = 0
+        ci = 0
+        for j in range(1,mathM):
+            sum3 = sum3 + r.mathAt(j,1)**2
+        ci = sum3 / sum1
+        aux = copy.deepcopy(v.scalarMultiplication(ci))
+        aux = copy.deepcopy(r.addMatrix(aux))
+        v = copy.deepcopy(aux)
+        X = copy.deepcopy(Y)
+    print("===== Conjugated Gradient =====")
+    print("Optim solution (x):")
+    X.display()
+    print("Test:")
+    result = A.multiplyMatrix(X)
+    result.display()
+    print("====================")
+
 def main():
     m = 10
     A = Matrix(m,m)
@@ -176,6 +230,7 @@ def main():
     A.display()
     Jacobi(m,A,a,epsilon,p)
     GaussSiedel(m,A,a,epsilon,p)
+    ConjugatedGradient(m,A,a,epsilon,p)
 
 if __name__ == '__main__':
     main()
