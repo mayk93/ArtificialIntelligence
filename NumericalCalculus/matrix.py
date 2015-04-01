@@ -1,3 +1,5 @@
+import copy
+
 def zeroMatrix(numberOfRows,numberOfColumns):
     zeroMatrix = []
     for row in range(0,numberOfRows):
@@ -14,6 +16,23 @@ def identityMatrix(numberOfRows,numberOfColumns):
             else:
                 zeroMatrix.append(Element(row,column,0))
     return zeroMatrix
+
+'''
+The method 'multiplyAndAdd' takes two lists as arguments.
+These lists are usually rows and columns of matrices
+The method ensures they are of equal length and if they are,
+it will sum the multiplication of each corresponding element.
+This method is used to compute the multiplication of two matrices.
+'''
+def multiplyAndAdd(list0,list1):
+    result = 0
+    if len(list0) == len(list1):
+        for element0, element1 in zip(list0,list1):
+            result = result + element0*element1
+        return result
+    else:
+        print("Bad lengths in 'multiplyAndAdd' method.")
+        return None
 
 class Element():
     def __init__(self,rowNumber,columnNumber,value):
@@ -66,6 +85,59 @@ class Matrix:
             oldRowNumber = element.rowNumber
             element.rowNumber = element.columnNumber
             element.columnNumber = oldRowNumber
+
+    '''
+    ===========================================================================
+    The following section contains auxiliary methods used in the implementation
+    of the matrix multiplication algorithm.
+    ===========================================================================
+    '''
+    '''
+    Order by column for getRow
+    '''
+    def getRow(self,rowIndex):
+        toReturnRow = []
+        for element in self.matrix:
+            if element.rowNumber == rowIndex:
+                toReturnRow.append(copy.deepcopy(element.value))
+        return toReturnRow
+    '''
+    Order by row for getColumn
+    '''
+    def getColumn(self,columnIndex):
+        toReturnColumn = []
+        for element in self.matrix:
+            if element.columnNumber == columnIndex:
+                toReturnColumn.append(copy.deepcopy(element.value))
+        return toReturnColumn
+    '''
+    ===========================================================================
+    '''
+    # This multiplication algorithm assumes your matrix (self) is on the "left"
+    # while the other matrix is on the "right".
+    def multiplyMatrix(self,otherMatrix):
+        toReturn = Matrix(self.numberOfRows,otherMatrix.numberOfColumns)
+        if self.numberOfColumns == otherMatrix.numberOfRows:
+            resultRowIndex = 0
+            for selfRowIndex in range(0,self.numberOfRows):
+                selfCurrentRow = self.getRow(selfRowIndex)
+                resultColumnIndex = 0
+                for otherColumnIndex in range(0,otherMatrix.numberOfColumns):
+                    otherCurrentColumn = otherMatrix.getColumn(otherColumnIndex)
+                    currentResult = multiplyAndAdd(selfCurrentRow,otherCurrentColumn)
+
+                    print("Row",selfRowIndex,"from matrix A with column",otherColumnIndex,"from matrix B")
+                    print("Row [A]:",selfCurrentRow)
+                    print("Column [B]:",otherCurrentColumn)
+                    print("Result:",currentResult)
+
+                    toReturn.insert(resultRowIndex,resultColumnIndex,currentResult)
+                    resultColumnIndex += 1
+                resultColumnIndex += 1
+            return toReturn
+        else:
+            print("Bad number of rows or columns, in method 'multiplyMatrix'.")
+            return None
     def display(self):
         print("===============")
         for row in range(0,self.numberOfRows):

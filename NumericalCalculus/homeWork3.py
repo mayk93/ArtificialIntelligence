@@ -3,6 +3,7 @@ import matrix
 from matrix import Matrix
 
 def main():
+    '''
     A = Matrix(5,6)
     print("A:")
     A.display()
@@ -38,6 +39,33 @@ def main():
     A.display()
     print("A has",A.numberOfRows,"rows.")
     print("A has",A.numberOfColumns,"columns.")
+    print("A[0][0] - Info:")
+    print(A.at(0,0))
+    print("A[1][1] - Math:")
+    print(A.mathAt(1,1))
+    print("A:")
+    A.display()
+    B.matrix = matrix.identityMatrix(B.numberOfRows,B.numberOfColumns)
+    print("B:")
+    B.display()
+    C = A.multiplyMatrix(B)
+    print("C:")
+    C.display()
+    '''
+    A = Matrix(5,5)
+    A.matrix = matrix.identityMatrix(A.numberOfRows,A.numberOfColumns)
+    B = Matrix(5,5)
+    B.matrix = matrix.identityMatrix(B.numberOfRows,B.numberOfColumns)
+    A.insert(0,0,3)
+    A.insert(0,1,8)
+    A.insert(3,2,-2)
+    B.insert(1,1,4)
+    B.insert(2,4,-9)
+    B.insert(3,1,7)
+    A.display()
+    B.display()
+    C = A.multiplyMatrix(B)
+    C.display()    
 
 
 if __name__ == '__main__':
