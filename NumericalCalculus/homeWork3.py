@@ -143,7 +143,19 @@ class Matrix:
                             pass
         return b
 
-def JacobbiMethod(A,m,p,b):
+def identity(rows,columns):
+    toReturn = []
+    for i in range(0,rows):
+        newRow = []
+        for j in range(0,columns):
+            if i != j:
+                newRow.append(mpfr(0))
+            else:
+                newRow.append(mpfr(1))
+        toReturn.append(newRow)
+    return toReturn
+
+def JacobbiMethod(A,m,p):
     i = 0
     j = 0
     u0 = 0
@@ -157,52 +169,40 @@ def JacobbiMethod(A,m,p,b):
 
     B = Matrix(m,m)
     I = Matrix(m,m)
+    I.matrix = identity(m,m)
+
+    b = Matrix(m,1)
+    b.matrix = [[1],[1],[1],[1],[1],[1],[1],[1],[1],[1]]
 
     bs = Matrix(m,1)
     X = Matrix(m,1)
     Y = Matrix(m,1)
     Z0 = Matrix(m,1)
 
-    for k in range(1,p):
-
-        print("Iteration:",k,"START")
-        print("X:")
-        X.displayMatrix()
-        print("Y:")
-        Y.displayMatrix()
-
+    for k in range(1,p): #Here might be p, not p+1
         sigma = mpfr(t / (p + 1) * mpfr(k))
         As = Matrix(m,m)
-        As = A.multiply(sigma)
-        B = I.substract(As)
-        bs = b.multiply(sigma)
+        As = A.multiply(sigma);
+        B = I.substract(As);
+        bs = b.multiply(sigma);
         u = 0;
         eps = mpfr(10**(-10))
 
-        for i in range(i,m):
+        for i in range(i,m): #Here might be m, not pm+1
             X.matrix[i][0] = 0
 
-        print("Iteration:",k,"END")
-        print("X:")
-        X.displayMatrix()
-        print("Y:")
-        Y.displayMatrix()
-        '''
-        I cannot do a do-while loop in python
-        so I just wrote the content of the loop once
-        '''
         u += 1
-        Y = B.multiplyMatrix(X)
+        Y = X.multiplyMatrix(B)
         Y = Y.add(bs)
         sum = mpfr(0)
         for i in range(i,m):
             for j in range(j,m):
                 sum += A.matrix[i][j] * (Y.matrix[j][0] - X.matrix[j][0])*(Y.matrix[i][0] - X.matrix[i][0])
         er = sqrt(sum)
-        X = Y
+
         while er > eps:
             u += 1
-            Y = B.multiply(X)
+            Y = B.multiplyMatrix(X)
             Y = Y.add(bs)
             sum = mpfr(0)
             for i in range(i,m):
@@ -210,9 +210,6 @@ def JacobbiMethod(A,m,p,b):
                     sum += A.matrix[i][j] * (Y.matrix[j][0] - X.matrix[j][0])*(Y.matrix[i][0] - X.matrix[i][0])
             er = sqrt(sum)
             X = Y
-
-
-
         if k == 1:
             u0 = u
             X0 = X
@@ -222,7 +219,7 @@ def JacobbiMethod(A,m,p,b):
             X0 = X
             sigma0 = sigma
     print("\n ====================> Relaxed Jacobi Method <==================== \n")
-    print("\n ===> Relaxation Parameter:", sigma0)
+    print("\n ===> Parametrul optim de relaxare:", sigma0)
     print("Solution:")
     X0.displayMatrix();
     print("\n ===> A * X0 - Test:")
@@ -280,14 +277,14 @@ def GaussSeidelMethod(A,m,p,b):
                 sum1 = mpfr(0)
                 sum2 = mpfr(0)
                 for j in range(1,i): #Might be i-1
-                    sum1 += B.matrix[i][j] * Y.matrix[j][1]
+                    sum1 += B.matrix[i][j] * Y.matrix[j][0]
                 for j in range(i,m):
-                    sum2 += B.matrix[i][j] * X.matrix[j][1]
-                Y.matrix[i][1] = sum1 + sum2 + b.matrix[i][1] * sigma
+                    sum2 += B.matrix[i][j] * X.matrix[j][0]
+                Y.matrix[i][0] = sum1 + sum2 + b.matrix[i][0] * sigma
             sum = mpfr(0)
             for i in range(1,m):
                 for j in range(1,m):
-                    sum += A.matrix[i][j] * (Y.matrix[j][1] - X.matrix[j][1])*(Y.matrix[i][1] - X.matrix[i][1])
+                    sum += A.matrix[i][j] * (Y.matrix[j][0] - X.matrix[j][0])*(Y.matrix[i][0] - X.matrix[i][0])
             er = sqrt(sum)
             X = Y
         if k == 1:
@@ -319,9 +316,7 @@ def ConjugatedGradientMethod(A,m,p,b):
     r = b.substract(aux)
     v = r;
     for i in range(1,m):
-    	#//double sigma = (2.0 / p)* (double)k;
         sum1 = mpfr(0);
-
         for j in range(1,m):
             sum1 += r.matrix[j][0] * r.matrix[j][0]
         av = Matrix(m,1)
@@ -345,25 +340,28 @@ def ConjugatedGradientMethod(A,m,p,b):
         aux = r.add(aux)
         v = aux
         X = Y
-        print("\n ====================> Conjugated Gradient Method <==================== \n")
-        print("Solution:")
-        X.displayMatrix();
-        print("\n ===> A * X0 - Test:")
-        (A.multiplyMatrix(X)).displayMatrix()
+    print("\n ====================> Conjugated Gradient Method <==================== \n")
+    print("Solution:")
+    X.displayMatrix();
+    print("\n ===> A * X0 - Test:")
+    (A.multiplyMatrix(X)).displayMatrix()
 
 #Main
 def main():
     m = 10
     p = 10
     b = Matrix(m,1)
+
+    b.matrix = [[1],[1],[1],[1],[1],[1],[1],[1],[1],[1]]
+
     A = Matrix(m,m)
     A.fillMatrix()
     A.displayMatrix()
-    JacobbiMethod(A,m,p,b)
+    JacobbiMethod(A,m,p)
     print("==========")
-    #GaussSeidelMethod(A,m,p,b)
+    GaussSeidelMethod(A,m,p,b)
     print("==========")
-    #ConjugatedGradientMethod(A,m,p,b)
+    ConjugatedGradientMethod(A,m,p,b)
     print("==========")
 
 if __name__ == '__main__':
