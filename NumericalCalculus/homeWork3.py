@@ -66,6 +66,10 @@ def main():
     B.display()
     C = A.multiplyMatrix(B)
     C.display()
+    D = B.addMatrix(C)
+    D.display()
+    E = C.substractMatrix(D)
+    E.display()
 
 
 if __name__ == '__main__':
