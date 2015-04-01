@@ -34,6 +34,13 @@ def multiplyAndAdd(list0,list1):
         print("Bad lengths in 'multiplyAndAdd' method.")
         return None
 
+def sameSize(matrix0,matrix1):
+    if matrix0.numberOfRows != matrix1.numberOfRows:
+        return False
+    if matrix0.numberOfColumns != matrix1.numberOfColumns:
+        return False
+    return True
+
 class Element():
     def __init__(self,rowNumber,columnNumber,value):
         self.rowNumber = rowNumber
@@ -122,27 +129,44 @@ class Matrix:
     # This multiplication algorithm assumes your matrix (self) is on the "left"
     # while the other matrix is on the "right".
     def multiplyMatrix(self,otherMatrix):
-        toReturn = Matrix(self.numberOfRows,otherMatrix.numberOfColumns)
         if self.numberOfColumns == otherMatrix.numberOfRows:
+            toReturn = Matrix(self.numberOfRows,otherMatrix.numberOfColumns)
             for selfRowIndex in range(0,self.numberOfRows):
                 selfCurrentRow = self.getRow(selfRowIndex)
                 for otherColumnIndex in range(0,otherMatrix.numberOfColumns):
                     otherCurrentColumn = otherMatrix.getColumn(otherColumnIndex)
                     currentResult = multiplyAndAdd(selfCurrentRow,otherCurrentColumn)
-
-                    print("Row",selfRowIndex,"from matrix A with column",otherColumnIndex,"from matrix B")
-                    print("Row [A]:",selfCurrentRow)
-                    print("Column [B]:",otherCurrentColumn)
-                    print("Result:",currentResult)
-
                     toReturn.insert(selfRowIndex,otherColumnIndex,currentResult)
-
-                    print("The resulting matrix, so far:")
-                    toReturn.display()
             return toReturn
         else:
             print("Bad number of rows or columns, in method 'multiplyMatrix'.")
             return None
+    def addMatrix(self,otherMatrix):
+        if sameSize(self,otherMatrix):
+            toReturn = Matrix(self.numberOfRows,otherMatrix.numberOfColumns)
+            for rowIndex in range(0,self.numberOfRows):
+                for columnIndex in range(0,otherMatrix.numberOfColumns):
+                    toReturn.insert(rowIndex,columnIndex,(self.at(rowIndex,columnIndex)+otherMatrix.at(rowIndex,columnIndex)))
+            return toReturn
+        else:
+            print("Bad number of rows or columns, in method 'addMatrix'.")
+            return None
+    def substractMatrix(self,otherMatrix):
+        if sameSize(self,otherMatrix):
+            toReturn = Matrix(self.numberOfRows,otherMatrix.numberOfColumns)
+            for rowIndex in range(0,self.numberOfRows):
+                for columnIndex in range(0,otherMatrix.numberOfColumns):
+                    toReturn.insert(rowIndex,columnIndex,(self.at(rowIndex,columnIndex)-otherMatrix.at(rowIndex,columnIndex)))
+            return toReturn
+        else:
+            print("Bad number of rows or columns, in method 'substractMatrix'.")
+            return None
+    def infiniteNorm(self):
+        sums = []
+        for rowIndex in range(0,self.numberOfRows):
+            currentRow = self.getRow(rowIndex)
+            sums.append(sum(currentRow))
+        return max(sums)
     def display(self):
         print("===============")
         for row in range(0,self.numberOfRows):
