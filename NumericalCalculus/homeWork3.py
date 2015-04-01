@@ -33,6 +33,11 @@ def main():
     A.mathInsert(1,1,6)
     print("A after math insertion. There should be 6 in the corner.")
     A.display()
+    A.transpose()
+    print("A after transposition.")
+    A.display()
+    print("A has",A.numberOfRows,"rows.")
+    print("A has",A.numberOfColumns,"columns.")
 
 
 if __name__ == '__main__':

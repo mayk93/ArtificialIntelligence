@@ -35,6 +35,12 @@ class Matrix:
         else:
             print("Bad index in 'at' method.")
             return None
+    def mathAt(self,row,column):
+        if ((row > 0) and (column > 0)) and ((row <= self.numberOfRows) and (column <= self.numberOfColumns)):
+            return self.at(row-1,column-1)
+        else:
+            print("Bad index in 'mathAt' method.")
+            return None
     def insert(self,row,column,value):
         if row >= 0 and column >= 0 and row < self.numberOfRows and column < self.numberOfColumns:
             toRemoveIndex = 0
@@ -52,12 +58,14 @@ class Matrix:
         else:
             print("Bad index in 'mathInsert' method.")
             return None
-    def mathAt(self,row,column):
-        if ((row > 0) and (column > 0)) and ((row <= self.numberOfRows) and (column <= self.numberOfColumns)):
-            return self.at(row-1,column-1)
-        else:
-            print("Bad index in 'mathAt' method.")
-            return None
+    def transpose(self):
+        oldNumberOfRows = self.numberOfRows
+        self.numberOfRows = self.numberOfColumns
+        self.numberOfColumns = oldNumberOfRows
+        for element in self.matrix:
+            oldRowNumber = element.rowNumber
+            element.rowNumber = element.columnNumber
+            element.columnNumber = oldRowNumber
     def display(self):
         print("===============")
         for row in range(0,self.numberOfRows):
