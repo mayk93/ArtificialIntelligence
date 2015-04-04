@@ -1,0 +1,13 @@
+Steps for creating and using a Google Cloud Compute Engine connection:
+
+More info here: https://www.youtube.com/watch?v=gxZvofAvgHQ
+
+Connection:
+    0. Create a project at: https://console.developers.google.com
+    1. After creating a project, create an instance for the project.
+    2. Log in by using the command: gcloud auth login
+    3. Copy the SSH command and use it to log in from the Google Cloud SDK Shell.
+File Transfer:
+    0. Use winscp for file transer. Use the steps listed here:
+    http://winscp.net/eng/docs/guide_google_compute_engine
+    https://cloud.google.com/compute/docs/console
