@@ -15,4 +15,6 @@
         is telling the browser to set the reference for the bootstrap (href)
         as the url for static/css/bootstrap.min.css
 
-        
+    2. gcloud compute copy-files College/Tutorials/Python/Server/main.html root@server:/var/www/FlaskApp/FlaskApp/templates
+    
+       This is a working upload command, from Linux ( not tested on Windows )
