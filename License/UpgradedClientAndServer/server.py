@@ -15,7 +15,7 @@ recordingName = "toTranslate.wav" #The name we save the recording under
 recordingExists = os.path.exists(recordingName)
 HOST = "" #This is the Google Cloud compute engine VM instance IP
 PORT = 5555
-MAX_SIZE = 1024
+MAX_SIZE = 2048
 MAX_CONNECTIONS = 10 #For multithreaded refactoring
 SAVED = "SAVED"
 GoogleCloudServer = (HOST,PORT)
@@ -32,16 +32,34 @@ if verbose: print("Listening.")
 while True:
     clientConnection, address = serverSocket.accept()
     if verbose: print("Accepted connection from:",address)
+
+    recordingSize = int((clientConnection.recv(MAX_SIZE)).decode())
+    if verbose: print("Recording size is:",recordingSize)
+
     recording = open(recordingName,'wb') #Save the recording. Here, recording is a stream to the file, where we write the bytes received via the socket
     if verbose: print("Saving recording.")
+    batch = 0
     while (True):
         partialRecording = clientConnection.recv(MAX_SIZE)
-        while (partialRecording):
+        completed = False
+        while not completed:
                 recording.write(partialRecording) #In the recording file, we write multiple partial recordings in order to get the entire recording.
-                partialRecording = clientConnection.recv(MAX_SIZE)
+                if verbose: print("Saving batch:",batch)
+                batch += 1
+                try:
+                    if verbose: print("0. Receiving data from client.")
+                    partialRecording = clientConnection.recv(MAX_SIZE)
+                    if verbose: print("1. Received data from client.")
+                except Exception as e:
+                    if verbose: print("Stopped receiving data.")
+                    if verbose: print(str(e))
+                if os.path.getsize(recordingName) >= recordingSize:
+                    completed = True
+                if verbose: print("Current recording size:",os.path.getsize(recordingName),"out of",recordingSize)
     recording.close()
     if verbose: print("Recording saved.")
     clientConnection.send(str(SAVED).encode())
+    if verbose: print("Confirmation sent.")
     clientConnection.close()
 serverSocket.close()
 if verbose: print("Socket closed.")

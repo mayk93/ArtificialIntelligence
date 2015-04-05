@@ -17,7 +17,8 @@ recordingName = "recording.wav"
 recordingExists = os.path.exists(recordingName)
 HOST = "104.155.13.116" #This is the Google Cloud compute engine VM instance IP
 PORT = 5555
-MAX_SIZE = 1024
+MAX_SIZE = 2048
+SAVED = "SAVED"
 GoogleCloudServer = (HOST,PORT)
 clientSocket = socket.socket() #This is a default, TCP socket
 
@@ -29,8 +30,12 @@ if verbose: print("Looking for recording.")
 while not recordingExists:
     recordingExists = os.path.exists(recordingName)
 
-if verbose: print("Recording found. Sending to server for processing.")
+if verbose: print("Recording found. Sending recording size to server.")
+recordingSize = os.path.getsize(recordingName) #First, send the file size
+clientSocket.send(str(recordingSize).encode())
+if verbose: print("Rrecording size:",recordingSize)
 
+if verbose: print("Recording size sent. Sending entire recording to server for processing.")
 recording=open (recordingName,"rb") #Open a stream to the recording
 partialRecording = recording.read(MAX_SIZE) #1024 bytes out of the whole recording
 
@@ -41,7 +46,7 @@ while partialRecording:
 if verbose: print("Recording sent. Waiting for confirmation.")
 confirmation = clientSocket.recv(MAX_SIZE)
 confirmation = confirmation.decode()
-if verbose: print("Decoding confirmation.")
+if verbose: print("Decoded confirmation:",confirmation)
 while confirmation != SAVED:
     pass
 if verbose: print("Confirmation received. Deleting recording.")
