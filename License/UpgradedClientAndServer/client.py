@@ -39,8 +39,11 @@ if verbose: print("Recording size sent. Sending entire recording to server for p
 recording=open (recordingName,"rb") #Open a stream to the recording
 partialRecording = recording.read(MAX_SIZE) #1024 bytes out of the whole recording
 
+totalSent = 0
 while partialRecording:
     clientSocket.send(partialRecording)
+    totalSent = totalSent + len(partialRecording)
+    if verbose: print("Sent",totalSent,"out of",recordingSize)
     partialRecording = recording.read(MAX_SIZE)
 
 if verbose: print("Recording sent. Waiting for confirmation.")
