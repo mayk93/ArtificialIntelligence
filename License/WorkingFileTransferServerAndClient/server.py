@@ -1,7 +1,11 @@
 import socket
 import sys
 s = socket.socket()
-s.bind(("localhost",9999))
+
+HOST = "104.155.13.116"
+PORT = 80
+
+s.bind((HOST,PORT))
 s.listen(10)
 
 while True:
