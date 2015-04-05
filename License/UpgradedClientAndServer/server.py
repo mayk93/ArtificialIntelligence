@@ -7,15 +7,17 @@ the NLTK scrip, called from here, after the recording is saved.
 #Libraries
 import socket
 import sys
+import os
 
 #Variables
 verbose = True
 recordingName = "toTranslate.wav" #The name we save the recording under
-recordingExists = os.path.exists(fileName)
-HOST = "104.155.13.116" #This is the Google Cloud compute engine VM instance IP
+recordingExists = os.path.exists(recordingName)
+HOST = "" #This is the Google Cloud compute engine VM instance IP
 PORT = 5555
 MAX_SIZE = 1024
 MAX_CONNECTIONS = 10 #For multithreaded refactoring
+SAVED = "SAVED"
 GoogleCloudServer = (HOST,PORT)
 serverSocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 serverSocket.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
@@ -39,6 +41,7 @@ while True:
                 partialRecording = clientConnection.recv(MAX_SIZE)
     recording.close()
     if verbose: print("Recording saved.")
+    clientConnection.send(str(SAVED).encode())
     clientConnection.close()
 serverSocket.close()
 if verbose: print("Socket closed.")

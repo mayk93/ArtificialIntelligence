@@ -9,11 +9,12 @@ It than deletes the file.
 #Libraries
 import socket
 import sys
+import os
 
 #Variables
 verbose = True
 recordingName = "recording.wav"
-recordingExists = os.path.exists(fileName)
+recordingExists = os.path.exists(recordingName)
 HOST = "104.155.13.116" #This is the Google Cloud compute engine VM instance IP
 PORT = 5555
 MAX_SIZE = 1024
@@ -26,7 +27,7 @@ clientSocket.connect(GoogleCloudServer)
 if verbose: print("Looking for recording.")
 
 while not recordingExists:
-    recordingExists = os.path.exists(fileName)
+    recordingExists = os.path.exists(recordingName)
 
 if verbose: print("Recording found. Sending to server for processing.")
 
@@ -37,8 +38,14 @@ while partialRecording:
     clientSocket.send(partialRecording)
     partialRecording = recording.read(MAX_SIZE)
 
-if verbose: print("Recording sent. Deleting recording.")
-os.remove(fileName)
+if verbose: print("Recording sent. Waiting for confirmation.")
+confirmation = clientSocket.recv(MAX_SIZE)
+confirmation = confirmation.decode()
+if verbose: print("Decoding confirmation.")
+while confirmation != SAVED:
+    pass
+if verbose: print("Confirmation received. Deleting recording.")
+os.remove(recordingName)
 if verbose: print("Recording deleted. Closing socket.")
-s.close()
+clientSocket.close()
 if verbose: print("Socket closed.")
