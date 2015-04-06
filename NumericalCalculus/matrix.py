@@ -173,6 +173,12 @@ class Matrix:
             currentRow = self.getRow(rowIndex)
             sums.append(sum(currentRow))
         return max(sums)
+    def normOne(self):
+        sums = []
+        for columnIndex in range(0,self.numberOfColumns):
+            currentColumn = self.getColumn(columnIndex)
+            sums.append(sum(currentColumn))
+        return max(sums)
     def display(self):
         print("===============")
         for row in range(0,self.numberOfRows):
