@@ -318,7 +318,18 @@ def otherGaussSiedel(m,A,a,epsilon,p):
         print("====================")
     else:
         print("Else Other Gauss Siedel.")
+def otherJacobi(m,A,a,epsilon,p):
+    D = copy.deepcopy(A.diagonalMatrix())
+    E = copy.deepcopy((A.negativeElements()).lowerTriangularMatrix())
+    F = copy.deepcopy((A.negativeElements()).upperTriangularMatrix())
 
+    P = copy.deepcopy(D)
+    N = copy.deepcopy(D.substractMatrix(A))
+
+    Bj = D
+
+    N.display()
+    myN.display()
 
 def main():
     m = 10
@@ -331,10 +342,13 @@ def main():
 
     print("The matrix A:")
     A.display()
+    '''
     Jacobi(m,A,a,epsilon,p)
     GaussSiedel(m,A,a,epsilon,p)
     ConjugatedGradient(m,A,a,epsilon,p)
     otherGaussSiedel(m,A,a,epsilon,p)
+    '''
+    otherJacobi(m,A,a,epsilon,p)
 
 if __name__ == '__main__':
     main()

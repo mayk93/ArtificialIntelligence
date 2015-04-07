@@ -84,24 +84,72 @@ class Matrix:
         else:
             print("Bad index in 'mathInsert' method.")
             return None
-    def transpose(self):
-        oldNumberOfRows = self.numberOfRows
-        self.numberOfRows = self.numberOfColumns
-        self.numberOfColumns = oldNumberOfRows
-        for element in self.matrix:
-            oldRowNumber = element.rowNumber
-            element.rowNumber = element.columnNumber
-            element.columnNumber = oldRowNumber
 
-    '''
-    ===========================================================================
-    The following section contains auxiliary methods used in the implementation
-    of the matrix multiplication algorithm.
-    ===========================================================================
-    '''
-    '''
-    Order by column for getRow
-    '''
+    def diagonalMatrix(self):
+        diagonal = Matrix(self.numberOfRows,self.numberOfColumns)
+        for element in self.matrix:
+            if element.rowNumber == element.columnNumber:
+                diagonal.insert(element.rowNumber,element.columnNumber,element.value)
+        return copy.deepcopy(diagonal)
+
+    def negativeElements(self):
+        negativeElements = Matrix(self.numberOfRows,self.numberOfColumns)
+        for element in self.matrix:
+            negativeElements.insert(element.rowNumber,element.columnNumber,-element.value)
+        return copy.deepcopy(negativeElements)
+
+    def lowerTriangularMatrix(self):
+        lowerTriangular = Matrix(self.numberOfRows,self.numberOfColumns)
+        for element in self.matrix:
+            if element.rowNumber < element.columnNumber:
+                lowerTriangular.insert(element.rowNumber,element.columnNumber,element.value)
+        return copy.deepcopy(lowerTriangular)
+
+    def upperTriangularMatrix(self):
+        upperTriangular = Matrix(self.numberOfRows,self.numberOfColumns)
+        for element in self.matrix:
+            if element.rowNumber > element.columnNumber:
+                upperTriangular.insert(element.rowNumber,element.columnNumber,element.value)
+        return copy.deepcopy(upperTriangular)
+
+    def lipUPKsum(L,U,k,i,m):
+        toReturn = 0
+        for p in rannge(1,k-1):
+            toReturn = toReturn + L.mathAt(i,p)*U.mathAt(u,k)
+        return toReturn
+
+    def lkpUPJsum(L,U,k,j,m):
+        toReturn = 0
+        for p in rannge(1,k-1):
+            toReturn = toReturn + L.mathAt(k,p)*U.mathAt(p,j)
+        return toReturn
+
+    def LUdecomposition():
+        m = self.numberOfRows+1
+        L = Matrix(self.numberOfRows,self.numberOfColumns)
+        U = Matrix(self.numberOfRows,self.numberOfColumns)
+        for i in range(1,m):
+            L.mathInsert(i,1,A.mathAt(i,1))
+        U.mathInsert(1,1,1)
+        for j in range(2,m):
+            U.mathInsert(1,j,A.mathAt(1,j)/L.mathAt(1,1))
+        for k in range(2,m):
+            for i in range(k,m):
+                L.insert(i,k, ( A.mathAt(i,k) - lipUPKsum(L,U,k,i,m) ) )
+            U.mathInsert(k,k,1)
+            for j in range(k+1,m):
+                U.insert(k,j, ( (A.mathAt(k,j) - lkpUPJsum(L,U,k,j,m)) / L.mathAt(k,k) ) )
+        return copy.deepcopy( (copy.deepcopy(L),copy.deepcopy(U)) )
+
+    def inverse(self):
+        inverse = Matrix(self.numberOfRows,self.numberOfColumns)
+        L,U = self.LUdecomposition()
+        inverseColumns = []
+        for indexOfInverseColumn in range(0,self.numberOfColumns):
+            inverseColumn = solveLinearEquationSystem(A,canonicalBaseVector(indexOfInverseColumn))
+            inverseColumns.append(inverseColumn)
+        return copy.deepcopy(buildInverse(inverseColumns))
+
     def getRow(self,rowIndex):
         toReturnRow = []
         auxiliary = []
@@ -110,10 +158,8 @@ class Matrix:
                 auxiliary.append(copy.deepcopy(element))
         auxiliary.sort(key=lambda x: x.columnNumber)
         toReturnRow = [copy.deepcopy(element.value) for element in auxiliary]
-        return toReturnRow
-    '''
-    Order by row for getColumn
-    '''
+        return copy.deepcopy((toReturnRow))
+
     def getColumn(self,columnIndex):
         toReturnColumn = []
         auxiliary = []
@@ -122,12 +168,8 @@ class Matrix:
                 auxiliary.append(copy.deepcopy(element))
         auxiliary.sort(key=lambda x: x.rowNumber)
         toReturnColumn = [copy.deepcopy(element.value) for element in auxiliary]
-        return toReturnColumn
-    '''
-    ===========================================================================
-    '''
-    # This multiplication algorithm assumes your matrix (self) is on the "left"
-    # while the other matrix is on the "right".
+        return copy.deepcopy(toReturnColumn)
+
     def multiplyMatrix(self,otherMatrix):
         if self.numberOfColumns == otherMatrix.numberOfRows:
             toReturn = Matrix(self.numberOfRows,otherMatrix.numberOfColumns)
@@ -137,48 +179,54 @@ class Matrix:
                     otherCurrentColumn = otherMatrix.getColumn(otherColumnIndex)
                     currentResult = multiplyAndAdd(selfCurrentRow,otherCurrentColumn)
                     toReturn.insert(selfRowIndex,otherColumnIndex,currentResult)
-            return toReturn
+            return copy.deepcopy(toReturn)
         else:
             print("Bad number of rows or columns, in method 'multiplyMatrix'.")
             return None
+
     def scalarMultiplication(self,scalar):
         toReturn = Matrix(self.numberOfRows,self.numberOfColumns)
         for i in range(0,self.numberOfRows):
             for j in range(0,self.numberOfColumns):
                 toReturn.insert(i,j,copy.deepcopy(scalar*self.at(i,j)))
-        return toReturn
+        return copy.deepcopy(toReturn)
+
     def addMatrix(self,otherMatrix):
         if sameSize(self,otherMatrix):
             toReturn = Matrix(self.numberOfRows,otherMatrix.numberOfColumns)
             for rowIndex in range(0,self.numberOfRows):
                 for columnIndex in range(0,otherMatrix.numberOfColumns):
                     toReturn.insert(rowIndex,columnIndex,(self.at(rowIndex,columnIndex)+otherMatrix.at(rowIndex,columnIndex)))
-            return toReturn
+            return copy.deepcopy(toReturn)
         else:
             print("Bad number of rows or columns, in method 'addMatrix'.")
             return None
+
     def substractMatrix(self,otherMatrix):
         if sameSize(self,otherMatrix):
             toReturn = Matrix(self.numberOfRows,otherMatrix.numberOfColumns)
             for rowIndex in range(0,self.numberOfRows):
                 for columnIndex in range(0,otherMatrix.numberOfColumns):
                     toReturn.insert(rowIndex,columnIndex,(self.at(rowIndex,columnIndex)-otherMatrix.at(rowIndex,columnIndex)))
-            return toReturn
+            return copy.deepcopy(toReturn)
         else:
             print("Bad number of rows or columns, in method 'substractMatrix'.")
             return None
+
     def infiniteNorm(self):
         sums = []
         for rowIndex in range(0,self.numberOfRows):
             currentRow = self.getRow(rowIndex)
             sums.append(sum(currentRow))
         return max(sums)
+
     def normOne(self):
         sums = []
         for columnIndex in range(0,self.numberOfColumns):
             currentColumn = self.getColumn(columnIndex)
             sums.append(sum(currentColumn))
         return max(sums)
+
     def display(self):
         print("===============")
         for row in range(0,self.numberOfRows):
