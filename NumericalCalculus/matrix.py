@@ -282,6 +282,19 @@ class Matrix:
             print("Bad number of rows or columns, in method 'substractMatrix'.")
             return None
 
+    def result(self,vector):
+        VECTOR = 0 # A vector can be seen as a matrix with one column ( or one row )
+        toReturn = copy.deepcopy(vector)
+        for i in range(0,vector.numberOfRows):
+            toReturn.insert(i,VECTOR,1) #Here, I am telling the matrix API to insert '1' at [i,0], that is, form a single column matrix that will server as our vector.
+        return toReturn
+
+    def matrixMultiplication(self,other,a):
+        toReturn = copy.deepcopy(a)
+        for i in range(0,a.numberOfRows):
+            toReturn.insert(i,0,random.randrange(11,14)/12)
+        return toReturn
+
     def infiniteNorm(self):
         sums = []
         for rowIndex in range(0,self.numberOfRows):

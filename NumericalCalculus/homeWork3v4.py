@@ -414,7 +414,7 @@ def getMax(matrix):
     maxElement = None
     maxValue = -999
     for element in matrix.matrix:
-        if element.value > maxValue:
+        if element.value > maxValue and element.rowNumber<element.columnNumber:
             maxValue = element.value
             maxElement = copy.deepcopy(element)
     return (maxElement.value,maxElement.rowNumber,maxElement.columnNumber)
@@ -422,9 +422,9 @@ def getMax(matrix):
 def checkX(toCheck):
     for element in toCheck.matrix:
         if element.rowNumber != element.columnNumber:
-            if abs(element.value) > 10**(-10):
-                return False
-    return True
+            if abs(element.value) > 10**(-5):
+                return True
+    return False
 
 def rotationMethod(m,A,a,epsilon,p):
     #print("Start Rotation.")
@@ -442,6 +442,7 @@ def rotationMethod(m,A,a,epsilon,p):
         r = copy.deepcopy(a.substractMatrix(A.matrixMultiplication(X,a)))
         #print("1")
         (xpq,p,q) = getMax(A.lowerTriangularMatrix())
+        print(">>",p," ",q)
         #print("2")
         theta = 0
         if A.lowerTriangularMatrix().at(p,p) == A.lowerTriangularMatrix().at(q,q):
@@ -449,7 +450,7 @@ def rotationMethod(m,A,a,epsilon,p):
             theta = math.pi/4
         else:
             #print("4")
-            theta = ( 2 * xpq )/(A.upperTriangularMatrix().at(p,p) - A.upperTriangularMatrix().at(q,q) + (10**(-5)))
+            theta = (1/2)*math.arct(( 2 * xpq )/(A.upperTriangularMatrix().at(p,p) - A.upperTriangularMatrix().at(q,q)))
         #print("Determined theta.")
         c = math.cos(theta)
         s = math.sin(theta)
@@ -475,7 +476,7 @@ def rotationMethod(m,A,a,epsilon,p):
             print("-----")
         X = copy.deepcopy(oldA)
         iterationNumber += 1
-        condition = iterationNumber > 10**(15)
+        condition = iterationNumber > 10**(3) or checkX(X)
         #condition = checkX(X)
 
     print("===== Rotation Method =====")
