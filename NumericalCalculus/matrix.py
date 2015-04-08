@@ -290,9 +290,9 @@ class Matrix:
         for element in self.matrix:
             #print("Is Almost Zero. Element value:",element.value)
             if abs(element.value) > 10**(-3):
-                print("Returning False.")
+                #print("Returning False.")
                 return False
-        print("Returning True.")
+        #print("Returning True.")
         return True
 
     def display(self):
