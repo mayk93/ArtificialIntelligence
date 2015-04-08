@@ -319,6 +319,10 @@ def otherGaussSiedel(m,A,a,epsilon,p):
     else:
         print("Else Other Gauss Siedel.")
 def otherJacobi(m,A,a,epsilon,p):
+    VECTOR = 1
+    X = Matrix(m,VECTOR)
+    oldX = Matrix(m,VECTOR)
+    r = Matrix(m,VECTOR)
     D = copy.deepcopy(A.diagonalMatrix())
     E = copy.deepcopy((A.negativeElements()).lowerTriangularMatrix())
     F = copy.deepcopy((A.negativeElements()).upperTriangularMatrix())
@@ -326,10 +330,31 @@ def otherJacobi(m,A,a,epsilon,p):
     P = copy.deepcopy(D)
     N = copy.deepcopy(D.substractMatrix(A))
 
-    Bj = D
+    inverseD = copy.deepcopy(D.inverse())
+    Bj = copy.deepcopy(inverseD.multiplyMatrix(copy.deepcopy(E.addMatrix(F))))
 
-    N.display()
-    myN.display()
+    for iteration in range(0,100):
+        Bjp = copy.deepcopy((Bj.scalarMultiplication(p)).addMatrix((matrix.newIdentiryMatrix(m,m)).scalarMultiplication(1-p)))
+
+    condition = True
+    while condition:
+        r = copy.deepcopy(a.substractMatrix(A.multiplyMatrix(X)))
+        oldX = copy.deepcopy(X)
+        X = copy.deepcopy(oldX.addMatrix( copy.deepcopy( inverseD.scalarMultiplication(p) ).multiplyMatrix(r) ))
+        condition = not r.isAlmostZero()
+
+    print("===== Other Jacobi =====")
+    print("X:")
+    X.display()
+    print("Test:")
+    r.display()
+    print("====================")
+    '''
+    condition = True
+    while condition:
+        pass
+        condition = True
+    '''
 
 def main():
     m = 10

@@ -17,6 +17,54 @@ def identityMatrix(numberOfRows,numberOfColumns):
                 zeroMatrix.append(Element(row,column,0))
     return zeroMatrix
 
+def newIdentiryMatrix(numberOfRows,numberOfColumns):
+    identityMatrix = Matrix(numberOfRows,numberOfColumns)
+    for row in range(0,numberOfRows):
+        for column in range(0,numberOfColumns):
+            if row == column:
+                identityMatrix.insert(row,column,1)
+    return copy.deepcopy(identityMatrix)
+
+#Note: This returns a "vertical" vector
+def canonicalBaseVector(i,n):
+    VECTOR = 1
+    #Here, I chose as notation e as it is the mathematical notation.
+    e = Matrix(n,VECTOR)
+    e.mathInsert(i,VECTOR,1)
+    return copy.deepcopy(e)
+
+def likYKsum(L,y,i):
+    toReturn = 0
+    for k in range(1,i-1):
+        toReturn = toReturn + L.mathAt(i,k)*y.mathAt(k,1)
+    return toReturn
+
+def uikXKsum(U,x,i,m):
+    toReturn = 0
+    for k in range(i+1,m):
+        #print("U[i =",i," ,k = ",k,"] = ",U.mathAt(i,k))
+        #print("X[k =",k,"] = ",x.mathAt(k,1))
+        toReturn = toReturn + U.mathAt(i,k)*x.mathAt(k,1)
+    return toReturn
+
+def solveLinearEquationSystem(A,b):
+    VECTOR = 1
+    m = A.numberOfRows+1
+    x = Matrix(A.numberOfRows,VECTOR)
+    y = Matrix(A.numberOfRows,VECTOR)
+    L,U = A.LUdecomposition()
+
+    for i in range(1,m):
+        y.mathInsert(i,VECTOR, (b.mathAt(i,VECTOR) - likYKsum(L,y,i) )/ (L.mathAt(i,i)+(10**(-10))) )
+
+    for i in range(m-1,0,-1):
+        #print("y[i =",i,"] = ",y.mathAt(i,VECTOR))
+        #print("UIK sum = ",uikXKsum(U,x,i,m))
+        toAdd = y.mathAt(i,VECTOR) - uikXKsum(U,x,i,m)
+        x.mathInsert(i,VECTOR, toAdd )
+
+    return copy.deepcopy(x)
+
 '''
 The method 'multiplyAndAdd' takes two lists as arguments.
 These lists are usually rows and columns of matrices
@@ -53,6 +101,7 @@ class Matrix:
         self.numberOfRows = numberOfRows
         self.numberOfColumns = numberOfColumns
         self.matrix = zeroMatrix(self.numberOfRows,self.numberOfColumns)
+
     def at(self,row,column):
         if row >= 0 and column >= 0 and row < self.numberOfRows and column < self.numberOfColumns:
             for element in self.matrix:
@@ -61,12 +110,14 @@ class Matrix:
         else:
             print("Bad index in 'at' method.")
             return None
+
     def mathAt(self,row,column):
         if ((row > 0) and (column > 0)) and ((row <= self.numberOfRows) and (column <= self.numberOfColumns)):
             return self.at(row-1,column-1)
         else:
             print("Bad index in 'mathAt' method.")
             return None
+
     def insert(self,row,column,value):
         if row >= 0 and column >= 0 and row < self.numberOfRows and column < self.numberOfColumns:
             toRemoveIndex = 0
@@ -78,6 +129,7 @@ class Matrix:
         else:
             print("Bad index in 'insert' method.")
             return None
+
     def mathInsert(self,row,column,value):
         if ((row > 0) and (column > 0)) and ((row <= self.numberOfRows) and (column <= self.numberOfColumns)):
             self.insert(row-1,column-1,value)
@@ -112,43 +164,50 @@ class Matrix:
                 upperTriangular.insert(element.rowNumber,element.columnNumber,element.value)
         return copy.deepcopy(upperTriangular)
 
-    def lipUPKsum(L,U,k,i,m):
+    def lipUPKsum(self,L,U,k,i,m):
         toReturn = 0
-        for p in rannge(1,k-1):
-            toReturn = toReturn + L.mathAt(i,p)*U.mathAt(u,k)
+        for p in range(1,k-1):
+            toReturn = toReturn + L.mathAt(i,p)*U.mathAt(p,k)
         return toReturn
 
-    def lkpUPJsum(L,U,k,j,m):
+    def lkpUPJsum(self,L,U,k,j,m):
         toReturn = 0
-        for p in rannge(1,k-1):
+        for p in range(1,k-1):
             toReturn = toReturn + L.mathAt(k,p)*U.mathAt(p,j)
         return toReturn
 
-    def LUdecomposition():
+    def LUdecomposition(self):
         m = self.numberOfRows+1
         L = Matrix(self.numberOfRows,self.numberOfColumns)
         U = Matrix(self.numberOfRows,self.numberOfColumns)
         for i in range(1,m):
-            L.mathInsert(i,1,A.mathAt(i,1))
+            L.mathInsert(i,1,self.mathAt(i,1))
         U.mathInsert(1,1,1)
         for j in range(2,m):
-            U.mathInsert(1,j,A.mathAt(1,j)/L.mathAt(1,1))
+            U.mathInsert(1,j,self.mathAt(1,j)/L.mathAt(1,1))
         for k in range(2,m):
             for i in range(k,m):
-                L.insert(i,k, ( A.mathAt(i,k) - lipUPKsum(L,U,k,i,m) ) )
+                L.mathInsert(i,k, ( self.mathAt(i,k) - self.lipUPKsum(L,U,k,i,m) ) )
             U.mathInsert(k,k,1)
             for j in range(k+1,m):
-                U.insert(k,j, ( (A.mathAt(k,j) - lkpUPJsum(L,U,k,j,m)) / L.mathAt(k,k) ) )
+                U.mathInsert(k,j, ( (self.mathAt(k,j) - self.lkpUPJsum(L,U,k,j,m)) / self.mathAt(k,k) ) )
         return copy.deepcopy( (copy.deepcopy(L),copy.deepcopy(U)) )
 
-    def inverse(self):
+    def buildInverse(self, inverseColumns):
         inverse = Matrix(self.numberOfRows,self.numberOfColumns)
+        for columnIndex in range(0,len(inverseColumns)):
+            toAddColumn = copy.deepcopy(inverseColumns[columnIndex])
+            for rowIndex in range(0,len(inverseColumns)):
+                inverse.insert(rowIndex,columnIndex,toAddColumn.at(rowIndex,0))
+        return copy.deepcopy(inverse)
+
+    def inverse(self):
         L,U = self.LUdecomposition()
         inverseColumns = []
         for indexOfInverseColumn in range(0,self.numberOfColumns):
-            inverseColumn = solveLinearEquationSystem(A,canonicalBaseVector(indexOfInverseColumn))
+            inverseColumn = solveLinearEquationSystem(self,canonicalBaseVector(indexOfInverseColumn,self.numberOfColumns))
             inverseColumns.append(inverseColumn)
-        return copy.deepcopy(buildInverse(inverseColumns))
+        return copy.deepcopy(self.buildInverse(inverseColumns))
 
     def getRow(self,rowIndex):
         toReturnRow = []
@@ -226,6 +285,15 @@ class Matrix:
             currentColumn = self.getColumn(columnIndex)
             sums.append(sum(currentColumn))
         return max(sums)
+
+    def isAlmostZero(self):
+        for element in self.matrix:
+            #print("Is Almost Zero. Element value:",element.value)
+            if abs(element.value) > 10**(-3):
+                print("Returning False.")
+                return False
+        print("Returning True.")
+        return True
 
     def display(self):
         print("===============")
