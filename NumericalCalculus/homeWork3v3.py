@@ -3,6 +3,7 @@ import matrix
 import random
 from matrix import Matrix
 from math import sqrt
+import math
 
 def fillMatrix(matrixToFill):
     toReturn = copy.deepcopy(matrixToFill)
@@ -337,11 +338,25 @@ def otherJacobi(m,A,a,epsilon,p):
         Bjp = copy.deepcopy((Bj.scalarMultiplication(p)).addMatrix((matrix.newIdentiryMatrix(m,m)).scalarMultiplication(1-p)))
 
     condition = True
+    iterationNumber = 0
     while condition:
         r = copy.deepcopy(a.substractMatrix(A.multiplyMatrix(X)))
         oldX = copy.deepcopy(X)
         X = copy.deepcopy(oldX.addMatrix( copy.deepcopy( inverseD.scalarMultiplication(p) ).multiplyMatrix(r) ))
         condition = not r.isAlmostZero()
+
+        if iterationNumber%100 == 0:
+            print("-----")
+            print("Situation at iteration:",iterationNumber)
+            print("Condition:",condition)
+            print("oldX:")
+            oldX.display()
+            print("X:")
+            X.display()
+            print("The r vector:")
+            r.display()
+            print("-----")
+        iterationNumber += 1
 
     print("===== Other Jacobi =====")
     print("X:")
@@ -349,12 +364,105 @@ def otherJacobi(m,A,a,epsilon,p):
     print("Test:")
     r.display()
     print("====================")
-    '''
+
+def matrixGaussSiedel(m,A,a,epsilon,p):
+    VECTOR = 1
+    X = Matrix(m,VECTOR)
+    oldX = Matrix(m,VECTOR)
+    r = Matrix(m,VECTOR)
+    D = copy.deepcopy(A.diagonalMatrix())
+    E = copy.deepcopy((A.negativeElements()).lowerTriangularMatrix())
+    F = copy.deepcopy((A.negativeElements()).upperTriangularMatrix())
+
+    P = copy.deepcopy(D)
+    N = copy.deepcopy(D.substractMatrix(A))
+
+    inverseD = copy.deepcopy(D.inverse())
+    Bj = copy.deepcopy(inverseD.multiplyMatrix(copy.deepcopy(E.addMatrix(F))))
+
+    for iteration in range(0,100):
+        Bjp = copy.deepcopy((Bj.scalarMultiplication(p)).addMatrix((matrix.newIdentiryMatrix(m,m)).scalarMultiplication(1-p)))
+
     condition = True
+    iterationNumber = 0
     while condition:
-        pass
-        condition = True
-    '''
+        r = copy.deepcopy(a.substractMatrix(A.multiplyMatrix(X)))
+        oldX = copy.deepcopy(X)
+        X = copy.deepcopy(oldX.addMatrix( copy.deepcopy(copy.deepcopy(copy.deepcopy(D.scalarMultiplication(1/p).substractMatrix(E)).inverse()).multiplyMatrix(r)) ))
+        condition = not r.isAlmostZero()
+        if iterationNumber%100 == 0:
+            print("-----")
+            print("Situation at iteration:",iterationNumber)
+            print("Condition:",condition)
+            print("oldX:")
+            oldX.display()
+            print("X:")
+            X.display()
+            print("The r vector:")
+            r.display()
+            print("-----")
+        iterationNumber += 1
+
+    print("===== Matrix Gauss Siedel =====")
+    print("X:")
+    X.display()
+    print("Test:")
+    r.display()
+    print("====================")
+
+def getMax(matrix):
+    maxElement = None
+    maxValue = -999
+    for element in matrix.matrix:
+        if element.value > maxValue:
+            maxValue = element.value
+            maxElement = copy.deepcopy(element)
+    return (maxElement.value,maxElement.rowNumber,maxElement.columnNumber)
+
+def rotationMethod(m,A,a,epsilon,p):
+    print("Start Rotation.")
+    VECTOR = 1
+    X = Matrix(m,VECTOR)
+    oldA = Matrix(m,m)
+    r = Matrix(m,VECTOR)
+    iterationNumber = 0
+    condition = True
+    print("Entering while.")
+    while condition:
+        oldA = copy.deepcopy(A)
+        r = copy.deepcopy(a.substractMatrix(A.multiplyMatrix(X)))
+        (xpq,p,q) = getMax(A.upperTriangularMatrix())
+        theta = 0
+        if A.upperTriangularMatrix().at(p,p) == A.upperTriangularMatrix().at(q,q):
+            theta = math.pi/4
+        else:
+            theta = ( 2 * xpq )/(A.upperTriangularMatrix().at(p,p) - A.upperTriangularMatrix().at(q,q))
+        print("Determined theta.")
+        c = math.cos(theta)
+        s = math.sin(theta)
+        T = Matrix(m,m)
+        T.insert(p,p,c)
+        T.insert(p,q,-s)
+        T.insert(q,p,s)
+        T.insert(q,q,c)
+        print("Determined T.")
+        A = copy.deepcopy((T.transpose()).multiplyMatrix(oldA.multiplyMatrix(T)))
+        condition = not r.isAlmostZero()
+        if iterationNumber%100 == 0:
+            print("-----")
+            print("Situation at iteration:",iterationNumber)
+            print("Condition:",condition)
+            print("The r vector:")
+            r.display()
+            print("-----")
+        iterationNumber += 1
+
+    print("===== Rotation Method =====")
+    print("X:")
+    X.display()
+    print("Test:")
+    r.display()
+    print("====================")
 
 def main():
     m = 10
@@ -363,17 +471,15 @@ def main():
     a = Matrix(m,1)
     a = copy.deepcopy(fillResultVector(a))
     epsilon = 10**(-10)
-    p = 10
-
+    p = 2/10
     print("The matrix A:")
     A.display()
-    '''
-    Jacobi(m,A,a,epsilon,p)
-    GaussSiedel(m,A,a,epsilon,p)
-    ConjugatedGradient(m,A,a,epsilon,p)
-    otherGaussSiedel(m,A,a,epsilon,p)
-    '''
-    otherJacobi(m,A,a,epsilon,p)
+    rotationMethod(m,A,a,epsilon,p)
+    #Jacobi(m,A,a,epsilon,p)
+    #GaussSiedel(m,A,a,epsilon,p)
+    #ConjugatedGradient(m,A,a,epsilon,p)
+    #matrixGaussSiedel(m,A,a,epsilon,p)
+    #otherJacobi(m,A,a,epsilon,p)
 
 if __name__ == '__main__':
     main()

@@ -210,6 +210,12 @@ class Matrix:
             inverseColumns.append(inverseColumn)
         return copy.deepcopy(self.buildInverse(inverseColumns))
 
+    def transpose(self):
+        toReturn = Matrix(self.numberOfRows,self.numberOfColumns)
+        for element in self.matrix:
+            toReturn.insert(element.columnNumber,element.rowNumber,element.value)
+        return copy.deepcopy(toReturn)
+
     def adjust(self):
         self.insert(0,0, random.randrange(5,10)/1531)
 
