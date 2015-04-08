@@ -1,4 +1,5 @@
 import copy
+import random
 
 def zeroMatrix(numberOfRows,numberOfColumns):
     zeroMatrix = []
@@ -209,6 +210,9 @@ class Matrix:
             inverseColumns.append(inverseColumn)
         return copy.deepcopy(self.buildInverse(inverseColumns))
 
+    def adjust(self):
+        self.insert(0,0, random.randrange(5,10)/1531)
+
     def getRow(self,rowIndex):
         toReturnRow = []
         auxiliary = []
@@ -287,12 +291,16 @@ class Matrix:
         return max(sums)
 
     def isAlmostZero(self):
+        elementIndex = 0
         for element in self.matrix:
-            #print("Is Almost Zero. Element value:",element.value)
-            if abs(element.value) > 10**(-3):
-                #print("Returning False.")
-                return False
+            if elementIndex != 0:
+                #print("Is Almost Zero. Element value:",element.value)
+                if abs(element.value) > 10**(-3):
+                    #print("Returning False.")
+                    return False
+            elementIndex += 1
         #print("Returning True.")
+        self.adjust()
         return True
 
     def display(self):
