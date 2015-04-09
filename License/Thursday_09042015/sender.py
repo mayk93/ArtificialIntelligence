@@ -1,6 +1,7 @@
 # ----- SENDER ------
 
-from socket import *
+#from socket import *
+import socket
 import sys
 import time
 import os
@@ -28,7 +29,7 @@ while (data):
 s.close()
 f.close()
 '''
-
+'''
 HOST = "104.155.13.116" #This is the Google Cloud compute engine VM instance IP
 PORT = 5555
 GOOGLE_CLOUD = (HOST,PORT)
@@ -51,4 +52,36 @@ while fileData:
     print("Sleep.")
     time.sleep(1)
     print("Sleep over.")
-    
+'''
+
+# create dgram udp socket
+try:
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    print('Created socket')
+except socket.error:
+    print('Failed to create socket')
+    sys.exit()
+ 
+host = '104.155.13.116';
+port = 5555;
+
+filePath = "recording.wav"
+filebject = open(filePath, "rb")
+fileSize = os.path.getsize(filePath)
+ 
+while True:  
+    try :
+        fileData = filebject.read(1024)
+        #Set the whole string
+        s.sendto(fileData.encode('utf-8'), (host, port))
+         
+        # receive data from client (data, addr)
+        d = s.recvfrom(1024)
+        reply = d[0]
+        addr = d[1]
+         
+        print('Server reply : ' + reply.decode('utf-8'))
+     
+    except socket.error, msg:
+        print('Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
+        sys.exit()

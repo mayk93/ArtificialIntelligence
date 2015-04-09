@@ -1,6 +1,7 @@
 # ----- RECEIVER -----
 
-from socket import *
+#from socket import *
+import socket
 import sys
 import select
 import pyglet
@@ -38,6 +39,8 @@ except timeout:
     print("Translation launched.")
 '''
 
+
+"""
 HOST = "" #This is the Google Cloud compute engine VM instance IP
 PORT = 5555
 GOOGLE_CLOUD = (HOST,PORT)
@@ -52,9 +55,58 @@ condition = True
 
 while True:
     print("Receiving.")
-    received = clientSocket.recv(MAX_SIZE)
+    received = clientSocket.recvfrom(MAX_SIZE)
     print("Received")
     if condition:
         print("Starting translation with arguments:",received)
         os.system("translate.py")
         condition = False
+"""
+
+'''
+    Simple udp socket server
+'''
+ 
+HOST = ''   # Symbolic name meaning all available interfaces
+PORT = 5555 # Arbitrary non-privileged port
+ 
+# Datagram (udp) socket
+try :
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    print('Socket created')
+except socket.error as msg :
+    print('Failed to create socket. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
+    sys.exit()
+ 
+ 
+# Bind socket to local host and port
+try:
+    s.bind((HOST, PORT))
+except socket.error as msg:
+    print('Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
+    sys.exit()
+     
+print('Socket bind complete')
+ 
+#now keep talking with the client
+while True:
+    # receive data from client (data, addr)
+    d = s.recvfrom(1024)
+    d = d.decode('utf-8')
+    data = d[0]
+    addr = d[1]
+    print("Received data.")
+    if not data:
+        print("Stopped receiving data.") 
+        break
+     
+    reply = "Starting translation with arguments:"
+    print("Starting translation with arguments:",data)
+    #os.system("~/var/www/translate.py")
+    #execfile("translate.py")
+    exec(open("translate.py").read())
+     
+    s.sendto(reply.encode('utf-8') , addr)
+    print('Message[' + addr[0] + ':' + str(addr[1]) + '] - ' + data.strip())
+     
+s.close()
