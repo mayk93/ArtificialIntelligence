@@ -77,14 +77,14 @@ def record():
 
     r = array('h')
     print("--->","While:")
-    while 1:
-        print("--->","In while.")
+    while True:
+        #print("--->","In while.")
         # little endian, signed short
         snd_data = array('h', stream.read(CHUNK_SIZE))
         if byteorder == 'big':
             snd_data.byteswap()
         r.extend(snd_data)
-        print("--->","Wh-0")
+        #print("--->","Wh-0")
         silent = is_silent(snd_data)
 
         if silent and snd_started:
@@ -94,8 +94,16 @@ def record():
             print("--->","Not Silent and sound not started.")
             snd_started = True
 
-        if snd_started and num_silent > 30:
+        if snd_started and (num_silent > 30):
             break
+
+        print("=====")
+        print("Situation in While:")
+        print("Sound data: ",snd_data)
+        print("Silent: ",silent)
+        print("Number of silent frames:",num_silent)
+        print("=====")
+        print("")
 
     print("--->",3)
     sample_width = p.get_sample_size(FORMAT)
