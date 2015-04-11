@@ -10,10 +10,9 @@ class System :
 
 class VectorOperations:
     def __init__(self):
-
+        pass
 
 class JacobiMatrix :
-
     def __init__(self):
         self.EPSILON = 10**(-5)
         this.system = System()
@@ -30,10 +29,7 @@ class JacobiMatrix :
         return (system.secondEquation(List((x[0],x[1]+self.EPSILON)))-
                 system.secondEquation(List((x[0],x[1]))))/self.EPSILON
     def getJacobi(x,i,j):
-        inverseDeterminant = firstFunctionDerivativeRespX(x) *
-                             secondFunctionDerivativeRespY(x) -
-                             firstFunctionDerivativeRespY(x) *
-                             secondFunctionDerivativeRespX(x)
+        inverseDeterminant = firstFunctionDerivativeRespX(x) * secondFunctionDerivativeRespY(x) - firstFunctionDerivativeRespY(x) * secondFunctionDerivativeRespX(x)
 
         if i == 0 :
             if j == 0 :
@@ -53,4 +49,5 @@ class Methods :
         system = System()
         jacobi = Jacobi()
         while(abs(system.systemValue(x)[0])>EPSILON and
-              abs(system.systemValue(x)[1])>EPSILON )
+              abs(system.systemValue(x)[1])>EPSILON ):
+              pass
