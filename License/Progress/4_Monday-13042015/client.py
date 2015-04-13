@@ -2,6 +2,8 @@
 import speech_recognition as SpeechRecognition
 import socket
 import pickle
+import threading
+import sys
 #Instantiation Methods
 def createUDPSocket():
     try:
@@ -14,6 +16,8 @@ def createUDPSocket():
 clientSocket = createUDPSocket()
 HOST = '104.155.13.116'
 PORT = 5555
+splitLenght = 100
+redundancySending = 10
 GoogleCloud = (HOST,PORT)
 
 recognizer = SpeechRecognition.Recognizer()
@@ -21,50 +25,53 @@ recognizer.energy_threshold = 1500
 microphone = SpeechRecognition.Microphone()
 
 RECOGNITION_ERROR = "Could not understand audio."
-MAX_SIZE = 2048
+MAX_SIZE = 1024
 #Functions
+def split(picklestring,size):
+    return [picklestring[i:i+size] for i in range(0, len(picklestring), size)]
+def displayText(text):
+    print("Output: ",text)
 def getSound():
     print("Get Sound Method.")
     with microphone as source:
         audio = recognizer.listen(source)
     print("End Get Sound Method.")
     return audio
-'''
-def getText(sound):
-    try:
-        return recognizer.recognize(sound)
-    except LookupError:
-        return RECOGNITION_ERROR
-'''
-def displayText(text):
-    print("Output: ",text)
-'''
-def sendText(text):
-    clientSocket.sendto(text.encode('utf-8'), GoogleCloud)
-'''
 def sendSound(sound):
-    print("Sending test string 0")
-    clientSocket.sendto("Test 0".encode('utf-8'),GoogleCloud)
-    print("Send Sound Method.")
     picklestring = pickle.dumps(sound)
-    clientSocket.sendto(picklestring,GoogleCloud)
-    print("Sending test string 1")
-    clientSocket.sendto("Test 1".encode('utf-8'),GoogleCloud)
-    print("End Send Sound Method.")
+    picklestring += "!".encode('utf-8')
+    smallPickleStringsArray = split(picklestring,splitLenght)
+    for index,smallPickleString in enumerate(smallPickleStringsArray):
+        print("Sending package:",index)
+        for sendManyTimes in range(0,redundancySending):
+            package = str(index).encode('utf-8') + "#".encode('utf-8') + smallPickleString
+            clientSocket.sendto(package,GoogleCloud)
+    '''
+    print("Pickled String:",picklestring)
+    while True:
+        clientSocket.sendto(picklestring,GoogleCloud)
+    '''
 def getServerText():
     while True:
         try:
             (reply,address) = clientSocket.recvfrom(MAX_SIZE)
             print('Server reply : ' + reply.decode('utf-8'))
         except socket.error as msg:
-            print('Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
-            sys.exit()
+            print("No or bad reply.")
+            try:
+                print("Reply:",reply)
+                print("Address:",address)
+            except:
+                pass
+            pass
 def main():
-    #sendText(getText(getSound()))
     print("Getting and sending sound sound.")
-    sendSound(getSound())
+    #sendSound(getSound())
+    audio = getSound()
+    threading.Thread(target=sendSound,args=(audio,)).start()
     print("Got and sent sound.")
-    getServerText()
+    threading.Thread(target=getServerText).start()
+    #getServerText()
     print("Ending main.")
 if __name__=='__main__':
     main()

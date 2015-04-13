@@ -19,7 +19,7 @@ def bindSocket(socket,destination):
 #Variables
 HOST = ''
 PORT = 5555
-MAX_SIZE = 4096
+MAX_SIZE = 1024
 RECOGNITION_ERROR = "Could not understand audio."
 GoogleCloud = (HOST,PORT)
 serverSocket = createUDPSocket()
@@ -49,11 +49,24 @@ def recognizeAudio(audio):
         return RECOGNITION_ERROR
 def getSoundFromClient():
     print("Waiting for data.")
+    maxPackageReceived = -1
+    audioPicklestring = ""
     while True:
+        print("In while.")
         (received,address) = serverSocket.recvfrom(MAX_SIZE)
-        try:
-            pickledAudio = received
-            audio = pickle.load(pickledAudio)
+        print("Received.")
+        #try:
+        print("In try.")
+        print("Raw received:",received)
+        print("Deserialized received:",pickle.load(received))
+        receivedPackageIndex = str(pickle.load(received)).split('#', 1)[0]
+        print("Received package:" , receivedPackageIndex)
+        if int(receivedPackageIndex) > maxPackageReceived:
+            print("Appending package ",receivedPackageIndex)
+            audioPicklestring += str(received).split("#",1)[1]
+        if "!".encode('utf-8') in received:
+            print("Final package received.")
+            audio = pickle.load(audioPicklestring)
             print("Received data. Sending data to processing.")
             text = recognizeAudio(audio)
             print("Received text from audio recognition.")
@@ -63,11 +76,17 @@ def getSoundFromClient():
             exec(open("translate.py").read())
             serverSocket.sendto(reply.encode('utf-8') , address )
             print('Message[' + address[0] + ':' + str(address[1]) + '] - ' + text.strip())
-
-        except:
-            encodedText = received
-            text = encodedText.decode('utf-8')
-            print("Received text:",text)
+        else:
+            reply = "Received " + str(maxPackageReceived) + " packages. Waiting for more."
+            print("Starting translation with arguments:",text)
+            exec(open("translate.py").read())
+            serverSocket.sendto(reply.encode('utf-8') , address )
+            print('Message[' + address[0] + ':' + str(address[1]) + '] - ' + text.strip())
+        #except:
+            '''
+            print("In except.")
+            pass
+            '''
         if not received:
             print("Stopped receiving data.")
             break
