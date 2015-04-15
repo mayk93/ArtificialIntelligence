@@ -60,10 +60,30 @@ def problem1():
             if not almostIn(currentRoot,roots,10**(-1)):
                 roots.append(currentRoot)
     print("Roots:",roots)
+def f(x):
+    return 1/(1+100*(x**2))
+def problem2a(m,roots,a,b): # Lagrange
+    n = len(roots)
+    for k in range(0,m):
+        z = a + ((b-a)/(m-1))*k
+        polynomValue = 0
+        for i in range(0,n):
+            product = f(roots[i])
+            denominator = 1 # Up
+            nominator = 1   # Down
+            for j in range(0,n):
+                if i != j:
+                    denominator *= (z - roots[j])
+                    nominator *= (roots[i]-roots[j])
+            product *= denominator/nominator
+            polynomValue += product
+        print("Polynom in ",z,":",polynomValue)
+
+
 def main():
     #problem1()
-    print(systemValue(-1.3054662227021259, -0.2170215531444045))
-
+    #print(systemValue(-1.3054662227021259, -0.2170215531444045))
+    problem2a(20,[-1/3,-1/5,-1/10,0,1/10,1/5,1/3],-1.5,1.5)
 
 if __name__ == '__main__':
     main()
