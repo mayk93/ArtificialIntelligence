@@ -78,12 +78,32 @@ def problem2a(m,roots,a,b): # Lagrange
             product *= denominator/nominator
             polynomValue += product
         print("Polynom in ",z,":",polynomValue)
-
-
+def problem2b(m,roots,a,b):
+    n = len(roots)
+    matrix = [[0 for x in range(n)] for x in range(n)]
+    c = [0 for i in range(0,n)]
+    for k in range(0,m):
+        z = a + ((b-a)/(m-1))*k
+        for i in range(0,n):
+            matrix[i][0] = f(roots[i])
+        c[0] = matrix[0][0]
+        for i in range(1,n):
+            for j in range(i,n):
+                matrix[i][j] = (matrix[i-1][j] - matrix[i-1][j-1])/(roots[j]-roots[j-i])
+            c[i] = matrix[i][i]
+        #print("Matrix:",matrix)
+        polynomValue = c[0]
+        for i in range(1,n):
+            product = c[i]
+            for j in range(0,i):
+                product *= (z - roots[j])
+            polynomValue += product
+        print("Polynom in",z,":",polynomValue)
 def main():
     #problem1()
     #print(systemValue(-1.3054662227021259, -0.2170215531444045))
-    problem2a(20,[-1/3,-1/5,-1/10,0,1/10,1/5,1/3],-1.5,1.5)
+    #problem2a(20,[-1/3,-1/5,-1/10,0,1/10,1/5,1/3],-1.5,1.5)
+    #problem2b(20,[-1/3,-1/5,-1/10,0,1/10,1/5,1/3],-1.5,1.5)
 
 if __name__ == '__main__':
     main()
