@@ -56,17 +56,25 @@ def getSoundFromClient():
         (received,address) = serverSocket.recvfrom(MAX_SIZE)
         print("Received.")
         #try:
+        '''
         print("In try.")
         print("Raw received:",received)
         print("Deserialized received:",pickle.load(received))
-        receivedPackageIndex = str(pickle.load(received)).split('#', 1)[0]
+        '''
+        receivedPackageIndexByte = str(pickle.loads(received)).split('#', 1)[0]
+        receivedPackageIndex = str(receivedPackageIndexByte)
         print("Received package:" , receivedPackageIndex)
-        if int(receivedPackageIndex) > maxPackageReceived:
+        if int(str(receivedPackageIndex)) > maxPackageReceived and "!".encode('utf-8') not in received:
             print("Appending package ",receivedPackageIndex)
             audioPicklestring += str(received).split("#",1)[1]
-        if "!".encode('utf-8') in received:
+        if int(str(receivedPackageIndex)) > maxPackageReceived and "!".encode('utf-8') in received:
             print("Final package received.")
-            audio = pickle.load(audioPicklestring)
+
+            receivedNoIndex = str(received).split("#",1)[1]
+            receivedNoEndToken = str(receivedNoIndex).split("!",1)[0]
+            audioPicklestring += receivedNoEndToken
+
+            audio = pickle.loads(audioPicklestring)
             print("Received data. Sending data to processing.")
             text = recognizeAudio(audio)
             print("Received text from audio recognition.")
