@@ -1,0 +1,59 @@
+What is a microarray?
+
+In genetics, a microarray or DNA microarray, sometimes referred to as DNA
+biochip, refers to microscopic DNA dots, attached to a surface, almost always
+solid.
+
+DNA microarrays are used, mainly by researchers, to evaluate the level of the
+process by which information from a large numbers of genes is used in the
+synthesis of a functional gene product.
+
+Due to the fact that in an array the number of probes can reach the tens of
+thousands, experimenting with a microarray can enable multiple genetic parallel
+tests.
+
+As a result, many research projects and investigations in the field of genetics
+have been dramatically accelerated by the use of microarrays.
+Usually, in a microarray, the probes are synthesized and then attached to a
+solid surface by altering the properties of the surface phase,
+with the purpose of reducing the degradation over time.
+This is accomplished by employing a covalent bond to a chemical matrix usually
+by way of epoxy-silane, polyacrylamide, lysine, amino-silane, or others.
+
+The solid surface of the array is, most often, a silicon chip or a glass
+surface. When a chip is used, they are colloquially known as an Affy chip.
+The name Affy comes from Affymetrix, an USA based company founded by
+Dr. Stephen Fodor in 1992, that manufactures DNA microarrays. Their
+headquarters are in Santa Clara, California.
+
+There are other microarray platforms, such as Illumina, that use microscopic
+beads, instead of the large solid support.
+Additionally, by using the direct synthesis of oligonucleotide probes on
+solid surfaces, microarrays can be constructed.
+
+The only difference between a DNA array and another array is that they
+either measure DNA or use DNA as part of their detection system.
+
+One of the uses of DNA microarrays is to measure variations in expression
+levels, in order to find SNPs, meaning single nucleotide polymorphisms.
+
+Microarrays are based on the fundamental idea of hybridization between two
+DNA strands. They require the property of complementary nucleic acid sequences
+in order to specifically pair one with another, through formation of hydrogen
+bonds between nucleotides that are base pair complementary.
+
+Many complementary base pairs in a nucleotide sequence translates to
+tighter non-covalent bonding between the two strands.
+
+After the cleaning of non-specific bonding sequences, only strands that are
+strongly paired will remain hybridized. Target sequences that are labeled by
+being made fluorescent, that also bind to a probe sequence and generate a signal,
+that in turn depends on the conditions that existed during hybridization, are
+washed after hybridization.
+
+The entire strength of the signal, from a feature, is a function of the amount
+of the target sample binding to the probes situated on that spot.
+Biochips use relative quantitation where the strength of a spot is being
+compared with the intensity of the same feature, but placed under a a condition
+that is not the initial one, and the identity of the feature is known by
+its location.

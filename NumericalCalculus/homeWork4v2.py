@@ -1,9 +1,14 @@
 import copy
+import matplotlib.pyplot as plt
 
 def firstEquation(x,y):
     return 7*(x**3) - 10*x - 7*y + 1
+def firstEquationFunction(x):
+    return x**3 - (10/7)*x + (1/7)
 def secondEquation(x,y):
     return 8*(y**3) - 11*y + x - 1
+def secondEquationFunction(x):
+    return -8*(x**3) + 11*x + 1
 def firstEquationDerivativeX(x,y):
     return 21*(x**2) - 10
 def firstEquationDerivativeY(x,y):
@@ -49,6 +54,15 @@ def almostIn(currentRoot,roots,epsilon):
         if abs(currentRoot[1] - root[1]) <= epsilon:
             return True
     return False
+def plot(roots):
+    plt.plot([x for x in drange(-2,2,0.1)], [firstEquationFunction(x) for x in drange(-2,2,0.1)])
+    plt.plot([x for x in drange(-2,2,0.1)], [secondEquationFunction(x) for x in drange(-2,2,0.1)],'r')
+    plt.plot(roots,'g^')
+
+    plt.axis([-3, 3, -3, 3])
+    plt.xlabel('Function')
+    plt.ylabel('Value')
+    plt.show()
 def problem1():
     step = 10**(-1)
     values = [0,0]
@@ -59,6 +73,7 @@ def problem1():
             currentRoot = newtonMethod([x,y],epsilon)
             if not almostIn(currentRoot,roots,10**(-1)):
                 roots.append(currentRoot)
+    plot(roots)
     print("Roots:",roots)
 def f(x):
     return 1/(1+100*(x**2))
@@ -100,7 +115,8 @@ def problem2b(m,roots,a,b):
             polynomValue += product
         print("Polynom in",z,":",polynomValue)
 def main():
-    #problem1()
+    #pass
+    problem1()
     #print(systemValue(-1.3054662227021259, -0.2170215531444045))
     #problem2a(20,[-1/3,-1/5,-1/10,0,1/10,1/5,1/3],-1.5,1.5)
     #problem2b(20,[-1/3,-1/5,-1/10,0,1/10,1/5,1/3],-1.5,1.5)
