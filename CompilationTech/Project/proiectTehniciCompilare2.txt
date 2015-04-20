@@ -1,0 +1,71 @@
+
+Titlu: Proiect Tehnici de Compilare.
+Student: Mandrescu Mihai Petru.
+Grupa: 342
+
+
+    Tema:
+    =====
+    Sa se studieze specificatia pentru generatorul de parser-e Bison. 
+    Sa se exemplifice pentru gramatica expresiilor in C/C++.
+    
+    Studiul Bison si Flex:
+    =========================
+    Bison este un utilitar UNIX ce genereaza parsere.
+    Parserele sunt generate in baza unui descrieri gramaticale, data printr-un
+    fisier <nume>.y ( Bison Grammar File ).
+    Gramaticile date trebuie sa fie libere de contex. 
+    O gramatica libera de context este o gramatica a carei productii pot fi 
+    aplicate indiferent de contextul unui nonterminal. Indiferent de ce 
+    simboluri este inconjurat, unicul nonterminal stang poate mereu sa fie 
+    inlocuit de ce e in dreapta.
+    
+    Exemplu pentru gramatica libera de context:
+    S -> ABA
+    S -> BAB
+    A -> 0
+    A -> 1
+    B -> a
+    B -> b
+    
+    S -> ABA -> 0BA -> 0aA -> 0a1
+    
+    Daca as fi avut o regula de tipul: 0BA1 -> x, limbajul meu nu ar mai fi
+    independent de context, pentru ca aceasta inlocuire este dependenta de
+    prezenta lui 0 si a lui 1.
+    
+    Bison genereaza parsere LALR.
+    LALR este o imbunatatire a parserului LR. Este mai eficient ca memorie decat
+    un parser LR(1) ( necesita atatea stari cat LR(0) ). Exista totusi limbaje
+    parsabile de un parser LR(1) ce nu pot fi parsate de LALR.
+    LR inseamna Left to right, Rightmost derivation.
+    LA inseamna Look Ahead. Look Ahead vine de la faptul ca se poate "uita" la
+    cateva (k, de obicei 1) din simbolurile urmatoare pentru a evita
+    backtracking-ul.
+    
+    Pentru a intelege functionarea utilitarului Bison, trebuie intelese cateva
+    concepte preliminare, precum forma normala Backus-Naur si arborii de sintaxa
+    abstracti.
+    
+    Forma normala Backus-Naur este o notatie pentru gramaticile independente
+    de context.
+    
+    Poate fi vazuta ca o multime de reguli de derivare.
+    <simbol> := <expresie>
+    Adica, un simbol ( neterminal ) poate fi inlocuit cu o expresie ( adica alte
+    simboluri, printre care si terminale ).
+    
+    Exemplu:
+    
+    <CNP> := <SEX><AN_NASTERE><LUNA><ZI><JUDET><NR_ORDINE><CIFRA_CONTROL>
+    
+    <SEX> := 1 | 2 ( terminal, se va inlocui cu 1 sau cu 2 )
+    <AN_NASTERE> := <><> 
+    <CIFRA1> := 0 | 1 | 2 | 3 | ... | 9
+    <CIFRA2> := 0 | 1 | 2 | 3 | ... | 9
+    <LUNA> := 01 | 02 | ... | 12
+    <ZI> := 01 | 02 | ... | 31
+    ...
+    etc
+    
+    
