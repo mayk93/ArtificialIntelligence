@@ -1,0 +1,161 @@
+Titlu: Proiect Tehnici de Compilare
+Tema: Studiul specificatiei Bison si exemplificarea pentru gramatica C/C++
+Student: Mandrescu Mihai Petru.
+Grupa: 342
+
+    Structura:
+    ==========
+
+    I Teorie
+        1. Introducere
+        2. Ce este Bison?
+        2. Sintaxa Bison
+        3. Mod de folosire
+    II Exemple
+        1.
+
+    I Teorie
+    ==========
+
+        Introducere
+        ---------------
+
+        Un parser este un algoritm care primeste ca intrare un sir de simboluri
+        si construieste pe baza acestuia o structura de date ierarhica, de
+        exemplu un arbore abstract de sintaxa. Acesta este reprezentarea
+        structurala a sirului.
+
+        Parserele construiesc structura respectiva in baza unor reguli data de
+        o gramatica. Pentru Bison, si in general, gramaticile trebuie sa fie
+        independente de context.
+
+        O gramatica independenta de context este o gramatica care poate avea
+        doar reguli de productie de forma:
+
+        N -> nt
+
+        Unde N este un singur non-terminal iar nt este un sir de non-terminale
+        sau terminale.
+
+        Gramaticile trebuie reprezentare intr-un fel pentru a fi interpretare de
+        Bison. Se foloseste Forma Normala Backus-Naur.
+
+        Forma normala Backus-Naur este o notatie pentru gramaticile independente
+        de context.
+
+        Poate fi vazuta ca o multime de reguli de derivare, de tipul:
+
+        <simbol> := <expresie>
+
+        Adica, un simbol ( neterminal ) poate fi inlocuit cu o expresie (
+        adica alte simboluri, fie terminale, fie neterminale). In notatia
+        BNF, avem:
+
+        1. ::= se defineste
+        2. |   sau
+        3. < > neterminal ( Daca avem <a>, inseamna ca il putem inlocui cu
+                            ceva. Daca avem a, inseamna ca e terminal, nu mai
+                            poate fi inlocuit. )
+
+        Pe baza gramaticii independente de context, data in notatie Backus-Naur,
+        parserul genereaza un arbore de parsare ( structura ierarhica mentionata
+        mai sus ).
+
+        Un arbore de parsare, sau de derivare, este reprezentarea structurii
+        unui sir ( string ), in functie de de gramatica independenta de context
+        care genereaza limbajul din care face parte sirul respectiv.
+
+        Gramaticile independente de context se impart in mai multe sub-clase, de
+        exemplu LR, SLR, LL, etc. Exista parsere generale, care pot genera un
+        arbore pe baza oricarei gramatici independente de context, cum ar fi
+        parserul Earley, cu complexitate O(n^3) sau parsere care functioneaza
+        doar pentru gramatici dintr-o subclasa, de obicei cu complexitate mai
+        buna.
+
+        Exista doua tipuri de parsere:
+
+        Parserele top-down, sau parserele predictive, construiesc arborele de
+        sintaxa de la radacina, incercand sa aleaga la fiecare pas regula de
+        productie potrivita pentru restul sirului. Aceasta strategie este
+        utilizata de parserele LL.
+
+        Parserele bottom-up, construiesc arborele de sintaxa de la nodurile
+        terminale. In functie de fiecare simbol de alege regula de derivare
+        corecta. Parserele LALR implementeaza aceasta strategie. Bison genereaza
+        parsere LALR.
+
+        Ce este Bison?
+        ---------------
+
+        Bison este un generator de parsere. Bison, pe baza unei gramatici
+        independente de context, genereaza un parser determinist LR sau LALR.
+        Bison poate genera, mai putin eficient, si alte tipuri de parsere.
+
+        Bison primeste specificatia unei gramatici independente de context,
+        o analizeaza si avertizeaza utilizatorul in cazul in care exista
+        ambiguitati in descriere si genereaza un parser ( un algoritm, un
+        program ) in C, C++ sau Java ( experimental ), care citeste siruri de
+        simboluri ( string-uri ) si decide daca stringul citit apartine
+        limbajului generat de gramatica data.
+
+        Sintaxa Bison:
+        ---------------
+
+        Intrarile pentru Bison sunt fisiere ".y" care contin descrierea
+        gramaticii independente de context.
+
+        Structura unui fisier de gramatica Bison este:
+
+        -----------------------------------------------------------------
+        %{
+          Prolog
+        %}
+
+        Declaratii Bison
+
+        %%
+        Reguli Gramaticale
+        %%
+
+        Epilog
+        -----------------------------------------------------------------
+
+        In Prolog se trec declaratiile functiilor utilizate in actiunile
+        regulilor gramaticale.
+
+        Declaratiile Bison definesc terminalele si neterminalele.
+        Declaram terminalele cu:
+
+        token numeTerminal
+
+        Declaram neterminalele cu:
+
+        %type <numeTip> numeNonterminal
+
+        Regulile gramaticale sunt descrise similar cu BNF:
+
+        rezultat : componente ;
+
+        Unde "rezultat" este un nonterminal iar "componentele" sunt terminalele
+        si nonterminalele care alcatuiesc rezultatul ( regulile sunt vazute
+        dintr-o perspectiva bottom-up ).
+
+        Mod de folosire
+        ---------------
+
+        Bison se foloseste prin invocare de la consola, in stil UNIX, cu un
+        argument necesar, care specifica calea catre un fisier de gramatica
+        bison. Extensia acestui fisier este .y.
+
+        bison gramatica.y
+
+        Se genereaza gramatica.tab.c, parserul aferent gramaticii.
+        Exista, in cazul in care se doreste utilizarea limbajului C++,
+        posibilitatea de a genera iesir cu extensia ".cpp".
+
+        bison -d -o parser.cpp gramatica.y
+
+    II Exemple
+    ==========
+
+        
