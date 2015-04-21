@@ -3,10 +3,11 @@ Mandrescu Mihai Petru - 342
 20.04.2015
 '''
 #Libraries
-from gmpy2 import mpfr as largeNumberReal
-from gmpy2 import mpz as largeNumberInteger
+from gmpy2 import mpfr as largeNumber
 from gmpy2 import sqrt as squareRoot
 from time import time as currentTime
+import gmpy2
+gmpy2.get_context().precision=2500
 
 #Definitions
 FACTORS = 0
@@ -32,12 +33,11 @@ class Factor:
         return ((p,q),endTime-startTime,A,x)
     def factor(self,N):
         startTime = currentTime()
-        A = largeNumberInteger(0)
-        possibleA = largeNumberReal(squareRoot(N))
+        possibleA = largeNumber(squareRoot(N))
         condition = True
         iteration = 0
         while condition:
-            x = largeNumberReal(squareRoot(possibleA**2 - N))
+            x = largeNumber(squareRoot(possibleA**2 - N))
             possibleP = possibleA - x
             possibleQ = possibleA + x
 
@@ -46,9 +46,9 @@ class Factor:
             print("Iteration:",iteration)
             print("possibleA:",str(possibleA))
             print("x:",x)
-            print("possibleP:",possibleP)
-            print("possibleQ:",possibleQ)
-            print("Match:",str(largeNumberInteger(possibleP*possibleQ)),"out of",N," --- Approximately",( largeNumberRead(largeNumberInteger(possibleP*possibleQ)/N) )*100,"%")
+            print("possibleP:",str(possibleP))
+            print("possibleQ:",str(possibleQ))
+            print("Match:",str(largeNumber(possibleP*possibleQ)),"out of",N," --- Approximately",( largeNumber(largeNumber(possibleP*possibleQ)/N) )*100,"%")
             print("---")
 
             if possibleP*possibleQ == N:
@@ -64,14 +64,14 @@ class Factor:
         print("Large number to factor:",str(self.N))
         print("Factor p =",str(self.p))
         print("Factor q =",str(self.q))
-        print("Found A =",self.A)
-        print("Found x =",self.x)
+        print("Found A =",str(self.A))
+        print("Found x =",str(self.x))
         print("=====")
 
 #Functions
 def readLargePrime(path):
     largeNumberString = str((open(path,'rb').read()[:-2]).decode('utf-8'))
-    return largeNumberInteger(largeNumberString)
+    return largeNumber(largeNumberString)
 def main():
     factor = Factor(readLargePrime(LARGE_PRIME_FILE))
     factor.display()
