@@ -84,4 +84,73 @@ Grupa: 342
         corecta. Parserele LALR implementeaza aceasta strategie. Bison genereaza
         parsere LALR.
 
-        
+        Ce este Bison?
+        ---------------
+
+        Bison este un generator de parsere. Bison, pe baza unei gramatici
+        independente de context, genereaza un parser determinist LR sau LALR.
+        Bison poate genera, mai putin eficient, si alte tipuri de parsere.
+
+        Bison primeste specificatia unei gramatici independente de context,
+        o analizeaza si avertizeaza utilizatorul in cazul in care exista
+        ambiguitati in descriere si genereaza un parser ( un algoritm, un
+        program ) in C, C++ sau Java ( experimental ), care citeste siruri de
+        simboluri ( string-uri ) si decide daca stringul citit apartine
+        limbajului generat de gramatica data.
+
+        Sintaxa Bison:
+        ---------------
+
+        Intrarile pentru Bison sunt fisiere ".y" care contin descrierea
+        gramaticii independente de context.
+
+        Structura unui fisier de gramatica Bison este:
+
+        -----------------------------------------------------------------
+        %{
+          Prolog
+        %}
+
+        Declaratii Bison
+
+        %%
+        Reguli Gramaticale
+        %%
+
+        Epilog
+        -----------------------------------------------------------------
+
+        In Prolog se trec declaratiile functiilor utilizate in actiunile
+        regulilor gramaticale.
+
+        Declaratiile Bison definesc terminalele si neterminalele.
+        Declaram terminalele cu:
+
+        token numeTerminal
+
+        Declaram neterminalele cu:
+
+        %type <numeTip> numeNonterminal
+
+        Regulile gramaticale sunt descrise similar cu BNF:
+
+        rezultat : componente ;
+
+        Unde "rezultat" este un nonterminal iar "componentele" sunt terminalele
+        si nonterminalele care alcatuiesc rezultatul ( regulile sunt vazute
+        dintr-o perspectiva bottom-up ).
+
+        Mod de folosire
+        ---------------
+
+        Bison se foloseste prin invocare de la consola, in stil UNIX, cu un
+        argument necesar, care specifica calea catre un fisier de gramatica
+        bison. Extensia acestui fisier este .y.
+
+        bison gramatica.y
+
+        Se genereaza gramatica.tab.c, parserul aferent gramaticii.
+        Exista, in cazul in care se doreste utilizarea limbajului C++,
+        posibilitatea de a genera iesir cu extensia ".cpp".
+
+        bison -d -o parser.cpp gramatica.y
