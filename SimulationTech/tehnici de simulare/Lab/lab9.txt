@@ -1,0 +1,53 @@
+generate (Exponential(1,0,300))
+split 2,executam23,1
+queue qmasina1
+seize masina1
+depart qmasina1
+advance 200,100
+release masina1
+unifica gather 3
+advance 60
+test ne p1,2,executam12
+test ne p1,3,executam13
+queue qmasina11
+seize masina11
+depart qmasina11
+advance 100,20
+release masina11
+gata assemble 3
+
+tabulate produse
+terminate 1
+
+executam23 test e p1,2,executam3
+queue qmasina2
+seize masina2
+depart qmasina2
+advance 80,20
+release masina2
+amasina2 match bmasina3
+transfer ,unifica
+
+executam3 queue qmasina3
+seize masina3
+depart qmasina3
+advance 150,30
+release masina3
+bmasina3 match amasina2
+transfer ,unifica
+
+executam12 queue qmasina12
+seize masina12
+depart qmasina12
+advance 120,30
+release masina12
+transfer ,gata
+
+executam13 queue qmasina13
+seize masina13
+depart qmasina13
+advance 120,30
+release masina13
+transfer ,gata
+
+produse table m1,100,100,20
