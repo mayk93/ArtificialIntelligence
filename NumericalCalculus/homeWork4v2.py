@@ -1,5 +1,6 @@
 import copy
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 def firstEquation(x,y):
     return 7*(x**3) - 10*x - 7*y + 1
@@ -55,6 +56,16 @@ def almostIn(currentRoot,roots,epsilon):
             return True
     return False
 def plot(roots):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot([x for x in drange(-2,2,0.1)], [y for y in drange(-2,2,0.1)], [firstEquation(x,y) for x,y in zip(drange(-2,2,0.1),drange(-2,2,0.1))], label='parametric curve')
+    ax.plot([x for x in drange(-2,2,0.1)], [y for y in drange(-2,2,0.1)], [secondEquation(x,y) for x,y in zip(drange(-2,2,0.1),drange(-2,2,0.1))], label='parametric curve')
+    ax.scatter([firstEquation(root[0],root[1]) for root in roots],
+            [secondEquation(root[0],root[1]) for root in roots],
+            [firstEquation(root[0],root[1]) for root in roots], label='parametric curve')
+    #ax.plot([x for x in drange(-2,2,0.1)], [y for y in drange(-2,2,0.1)], [firstEquation(x,y) for x,y in zip(drange(-2,2,0.1),drange(-2,2,0.1))], label='parametric curve')
+    plt.show()
+    '''
     plt.plot([x for x in drange(-2,2,0.1)], [firstEquationFunction(x) for x in drange(-2,2,0.1)])
     plt.plot([x for x in drange(-2,2,0.1)], [secondEquationFunction(x) for x in drange(-2,2,0.1)],'r')
     plt.plot(roots,'g^')
@@ -63,6 +74,7 @@ def plot(roots):
     plt.xlabel('Function')
     plt.ylabel('Value')
     plt.show()
+    '''
 def problem1():
     step = 10**(-1)
     values = [0,0]
