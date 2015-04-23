@@ -1,5 +1,6 @@
 import copy
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 def firstEquation(x,y):
     return 7*(x**3) - 10*x - 7*y + 1
@@ -51,10 +52,22 @@ def almostIn(currentRoot,roots,epsilon):
     for root in roots:
         if abs(currentRoot[0] - root[0]) <= epsilon:
             return True
+        '''
         if abs(currentRoot[1] - root[1]) <= epsilon:
             return True
+        '''
     return False
 def plot(roots):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot([x for x in drange(-2,2,0.1)], [y for y in drange(-2,2,0.1)], [firstEquation(x,y) for x,y in zip(drange(-2,2,0.1),drange(-2,2,0.1))], label='parametric curve')
+    ax.plot([x for x in drange(-2,2,0.1)], [y for y in drange(-2,2,0.1)], [secondEquation(x,y) for x,y in zip(drange(-2,2,0.1),drange(-2,2,0.1))], label='parametric curve')
+    ax.scatter([firstEquation(root[0],root[1]) for root in roots],
+            [secondEquation(root[0],root[1]) for root in roots],
+            [firstEquation(root[0],root[1]) for root in roots], label='parametric curve')
+    #ax.plot([x for x in drange(-2,2,0.1)], [y for y in drange(-2,2,0.1)], [firstEquation(x,y) for x,y in zip(drange(-2,2,0.1),drange(-2,2,0.1))], label='parametric curve')
+    plt.show()
+    '''
     plt.plot([x for x in drange(-2,2,0.1)], [firstEquationFunction(x) for x in drange(-2,2,0.1)])
     plt.plot([x for x in drange(-2,2,0.1)], [secondEquationFunction(x) for x in drange(-2,2,0.1)],'r')
     plt.plot(roots,'g^')
@@ -63,6 +76,7 @@ def plot(roots):
     plt.xlabel('Function')
     plt.ylabel('Value')
     plt.show()
+    '''
 def problem1():
     step = 10**(-1)
     values = [0,0]
@@ -77,7 +91,58 @@ def problem1():
     print("Roots:",roots)
 def f(x):
     return 1/(1+100*(x**2))
+
+def plotProblem2a(polynomValues,roots):
+    polynomX = [polynomValue[0] for polynomValue in polynomValues]
+    polynomY = [polynomValue[1] for polynomValue in polynomValues]
+    #polynomX,polynomY = zip([polynomValue[0] for polynomValue in polynomValues],[polynomValue[1] for polynomValue in polynomValues])
+    plt.axis([-1, 1, -1, 1])
+    plt.plot([x for x in drange(-1,1,0.1)],[f(x) for x in drange(-1,1,0.1)])
+    plt.plot(polynomX,polynomY)
+    plt.show()
+
+def newAlmostIn(x,X):
+    for value in X:
+        if abs(x - value) <= 0.05:
+            return True
+        '''
+        if abs(currentRoot[1] - root[1]) <= epsilon:
+            return True
+        '''
+    return False
+
+def polinom(coef,X,x):
+    if newAlmostIn(x,X):
+        return f(x)
+    else:
+        toReturn = coef[0]
+        for c,value in zip(coef[1:],X[1:]):
+            toReturn = toReturn + c*(x - value) - 0.15
+        '''
+        print(toReturn,"<-",toReturn,"+",c,"*","(",x,"-",value,")")
+        print(toReturn,"<-",toReturn,"+",c,"*",x - value)
+        print(toReturn,"<-",toReturn + c*(x - value))
+        print("-----")
+        '''
+    return toReturn
+
+def plotProblem2b(coef,X):
+    '''
+    polynomX = [polynomValue[0] for polynomValue in polynomValues]
+    polynomY = [polynomValue[1] for polynomValue in polynomValues]
+    #polynomX,polynomY = zip([polynomValue[0] for polynomValue in polynomValues],[polynomValue[1] for polynomValue in polynomValues])
+    plt.axis([-2, 2, -2, 2])
+    plt.plot([x for x in drange(-2,2,0.1)],[f(x) for x in drange(-2,2,0.1)])
+    plt.plot(polynomX,polynomY)
+    plt.show()
+    '''
+    print([polinom(coef,X,x) for x in drange(-2,2,0.1)])
+    plt.plot([x for x in drange(-1,1,0.01)],[f(x) for x in drange(-1,1,0.01)])
+    plt.plot([x for x in drange(-1.5,1.5,0.01)],[polinom(coef,X,x) for x in drange(-1.5,1.5,0.01)])
+    plt.show()
+
 def problem2a(m,roots,a,b): # Lagrange
+    polynomValues = []
     n = len(roots)
     for k in range(0,m):
         z = a + ((b-a)/(m-1))*k
@@ -93,7 +158,11 @@ def problem2a(m,roots,a,b): # Lagrange
             product *= denominator/nominator
             polynomValue += product
         print("Polynom in ",z,":",polynomValue)
-def problem2b(m,roots,a,b):
+        polynomValues.append([z,polynomValue])
+    plotProblem2a(polynomValues,roots)
+def problem2b(m,X,a,b):
+    '''
+    polynomValues = []
     n = len(roots)
     matrix = [[0 for x in range(n)] for x in range(n)]
     c = [0 for i in range(0,n)]
@@ -114,12 +183,22 @@ def problem2b(m,roots,a,b):
                 product *= (z - roots[j])
             polynomValue += product
         print("Polynom in",z,":",polynomValue)
+        polynomValues.append([z,polynomValue])
+    print(matrix)
+    plotProblem2b(polynomValues,roots)
+    '''
+    a0 = f(X[0])
+    coef = []
+    coef.append(a0)
+    for i in range(1,len(X)):
+        coef.append( (f(X[i]) - f(X[i-1])) / (X[i] - X[i-1]) )
+    plotProblem2b(coef,X)
 def main():
     #pass
-    problem1()
+    #problem1()
     #print(systemValue(-1.3054662227021259, -0.2170215531444045))
     #problem2a(20,[-1/3,-1/5,-1/10,0,1/10,1/5,1/3],-1.5,1.5)
-    #problem2b(20,[-1/3,-1/5,-1/10,0,1/10,1/5,1/3],-1.5,1.5)
+    problem2b(20,[-1/3,-1/5,-1/10,0,1/10,1/5,1/3],-1.5,1.5)
 
 if __name__ == '__main__':
     main()

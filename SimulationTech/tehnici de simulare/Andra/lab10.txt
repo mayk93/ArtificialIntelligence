@@ -1,0 +1,38 @@
+parcare storage 650
+cosuri storage 70
+carucioare storage 650
+
+generate 12
+test l s$parcare,650,pleaca
+enter parcare
+advance 60
+assign 1,(rn1@96+5)
+test l p1,10,multe
+enter cosuri
+advance (10#p1)
+seize coadaspeciala
+advance (25+5#(rn1@3))
+release coadaspeciala
+leave cosuri
+
+cumparat advance 60
+leave parcare
+tabulate cumparatori
+
+pleaca terminate
+
+multe enter carucioare
+advance (10#p1)
+select min 2,1,17,,Q
+queue p2
+seize p2
+depart p2
+advance (25+5#(rn1@3))
+release p2
+leave carucioare
+transfer ,cumparat
+
+cumparatori table m1,100,100,100
+
+generate 3600
+terminate 1

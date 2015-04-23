@@ -5,6 +5,8 @@ from matrix import Matrix
 from math import sqrt
 import math
 
+ITERATIONS = 20
+
 def fillMatrix(matrixToFill):
     toReturn = copy.deepcopy(matrixToFill)
     for i in range(0,matrixToFill.numberOfRows):
@@ -427,34 +429,23 @@ def checkX(toCheck):
     return False
 
 def rotationMethod(m,A,a,epsilon,p):
-    #print("Start Rotation.")
     VECTOR = 1
     X = Matrix(m,VECTOR)
     oldA = Matrix(m,m)
     r = Matrix(m,VECTOR)
     iterationNumber = 0
     condition = True
-    #print("Entering while.")
     while condition:
-        #print("OldA copy.")
         oldA = copy.deepcopy(A)
-        #print("0")
         r = copy.deepcopy(a.substractMatrix(A.matrixMultiplication(X,a)))
-        #print("1")
         (xpq,p,q) = getMax(A.lowerTriangularMatrix())
-        print(">>",p," ",q)
-        #print("2")
         theta = 0
         if A.lowerTriangularMatrix().at(p,p) == A.lowerTriangularMatrix().at(q,q):
-            #print("3")
             theta = math.pi/4
         else:
-            #print("4")
             theta = (1/2)*math.arct(( 2 * xpq )/(A.upperTriangularMatrix().at(p,p) - A.upperTriangularMatrix().at(q,q)))
-        #print("Determined theta.")
         c = math.cos(theta)
         s = math.sin(theta)
-        #print("5")
         T = Matrix(m,m)
         for i in range(0,T.numberOfColumns):
             T.insert(i,i,1)
@@ -462,9 +453,8 @@ def rotationMethod(m,A,a,epsilon,p):
         T.insert(p,q,s)
         T.insert(q,p,-s)
         T.insert(q,q,c)
-        #print("Determined T.")
         A = copy.deepcopy((T.transpose()).multiplyMatrix(oldA.multiplyMatrix(T)))
-        #condition = not r.isAlmostZero()
+        '''
         if iterationNumber%100 == 0:
             print("-----")
             print("Situation at iteration:",iterationNumber)
@@ -474,18 +464,18 @@ def rotationMethod(m,A,a,epsilon,p):
             print("X matrix:")
             X.display()
             print("-----")
+        '''
         X = copy.deepcopy(oldA)
         iterationNumber += 1
-        condition = iterationNumber > 10**(3) or checkX(X)
-        #condition = checkX(X)
+        condition = (iterationNumber < ITERATIONS)
 
     print("===== Rotation Method =====")
     print("X:")
     X.display()
     print("A:")
     A.display()
-    #print("Test:")
-    #r.display()
+    print("Test:")
+    r.display()
     print("====================")
 
 def main():
