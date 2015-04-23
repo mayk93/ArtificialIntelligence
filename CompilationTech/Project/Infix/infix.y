@@ -1,6 +1,6 @@
 /* 
     Proiect Tehnici de Compilare
-    Calculator cu notatie poloneza inversa
+    Calculator cu notatie infixata
     Mandrescu Mihai Petru - 342
 */
 
@@ -25,12 +25,14 @@
 /*
     Aici am declarat terminalul NUM. Daca acest terminal ar fi reprezentat de
     un singur caracter, nu ar fi trebuit sa il declaram.
+    Nici operatorii nu ar fi trebuit sa ii declar in mod specific ( exemplu
+    in reversePolish.y ) dar fac asta pentru a specifica asociativitatea
 */
 %token NUM
 %left '-' '+'
 %left '*' '/'
-%left NEG     /* negation--unary minus */
-%right '^'    /* exponentiation        *
+%left NEG     /* Operator minus unar */
+%right '^'    /* Ridicarea la putere */
 
 /* Aceasta este rectiunea pentru reguli gramaticale */
 /*
@@ -48,31 +50,32 @@
     In final, productiile pentru o expresie spun asa:
     1. O expresie poate fi un NUM ( terminal, un numar, valoarea ei ). In acest
        caz, valoarea expresiei este chiar valoare lui NUM.
-    2. O expresie poate fi alcatuita din alte doua expresii, urmate de un +.
+    2. O expresie poate fi alcatuita din alte doua expresii, cu un + intre ele.
        In acest caz, valoarea expresiei va fi adunarea valorii celor doua
        expresii care o formeaza.
+       Spunem ca expresia are valoarea $1 + $3 pentru ca are valoarea primei
+       expresii (pozitia 1) si a celei de a doua expresii (pozitia 3). Pozitia 2
+       este ocupata de caracterul +.
        Analog pentru -,*,/ si ^.
-    3. O expresie fi o expresie urmata de un "n". In acest caz, valoare
-       expresiei este negativul valorii expresiei din dreapta.        
+    3. O expresie fi o expresie aflata intre paranteze.        
 */
 %%
-input:    /* nimic */
+input:    /* empty string */
         | input line
 ;
 
 line:     '\n'
-        | exp '\n'  { printf ("--->%.10g\n", $1); }
+        | exp '\n'  { printf ("---> %.10g\n", $1); }
 ;
 
-exp:      NUM             { $$ = $1;         }
-        | exp exp '+'     { $$ = $1 + $2;    }
-        | exp exp '-'     { $$ = $1 - $2;    }
-        | exp exp '*'     { $$ = $1 * $2;    }
-        | exp exp '/'     { $$ = $1 / $2;    }
-      /* Exponentiation */
-        | exp exp '^'     { $$ = pow ($1, $2); }
-      /* Unary minus    */
-        | exp 'n'         { $$ = -$1;        }
+exp:      NUM                { $$ = $1;         }
+        | exp '+' exp        { $$ = $1 + $3;    }
+        | exp '-' exp        { $$ = $1 - $3;    }
+        | exp '*' exp        { $$ = $1 * $3;    }
+        | exp '/' exp        { $$ = $1 / $3;    }
+        | '-' exp  %prec NEG { $$ = -$2;        }
+        | exp '^' exp        { $$ = pow ($1, $3); }
+        | '(' exp ')'        { $$ = $2;         }
 ;
 %%
 
