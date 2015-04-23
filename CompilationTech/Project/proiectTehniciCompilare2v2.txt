@@ -12,7 +12,8 @@ Grupa: 342
         2. Sintaxa Bison
         3. Mod de folosire
     II Exemple
-        1.
+        1. Calculator cu notatie poloneza inversa
+        2. Calculator cu notatie infixata
 
     I Teorie
     ==========
@@ -157,5 +158,42 @@ Grupa: 342
 
     II Exemple
     ==========
-
         
+        1. Calculator cu notatie poloneza inversa
+        
+           Programul pentru acest calculator a fost generat cu Bison,
+           pe baza unei gramatici independente de context care descrie
+           expresiile acceptate pentru aritmetica in notatie poloneza
+           inversa.
+           
+           Pentru realizarea calculelor, fiecarei productii ii este asociata
+           si o actiune ( o functie in C ). Aceste functii asigura evaluarea
+           expresiilor.
+           
+           Spunem ca o intrare este fie vida fie alcatuita din linii.
+           Spunem ca liniile sunt fie goale ( doar enter ) fie contin
+           o expresie.
+           Spunem ca o expresie poate fi ori un numar ( terminalul NUM ), 
+           caz in care valoare expresiei este chiar valoare lui NUM, fie
+           "compunei" de expresii, adica o expresie este alcatuita din doua
+           expresii si un operator. Exista si posibilitatea ca o expresie sa
+           fie o expresie urmata de operatorul "n", negativ.
+           
+           intrare  -> lambda | linie
+           linie    -> enter  | expresie
+           expresie -> numar  | expresie expresie operator | expresie operator
+        
+           Fisierul cu descrierea gramaticala, reversePolish.y, este utilizat ca
+           intrare pentru bison. Este generat fisierul sursa reversePolish.tab.c
+           Acest fisier sursa trebuie compilat. Folosesc comanda:
+           
+           gcc reversePolish.tab.c -lm -o reversePolishCalculator
+            
+           Este necesar -lm pentru operatia de ridicare la putere, gasita in
+           libraria math. Prin "-lm" spun compilatorului sa "link-eze" aceasta
+           librarie.
+           
+        2. Calculator cu notatie infixata
+        
+           
+         
