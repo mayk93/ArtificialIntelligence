@@ -19,13 +19,15 @@ def fprime(x):
 correction = 1
 a = -correction
 b = 2*pi + correction
-n = 3
-h = ((2*pi - 0)/n)
+n = 4
+h = ((2*pi)/n)
+#h = real(pi/2)
 step = 10**(-1)
 
 fdomain = [x for x in domain(0,2*pi,step)]
 fcodomain = [f(x) for x in domain(0,2*pi,step)]
-division = [a + h , a + 2*h , a + 3*h , 2*pi]
+division = [h , 2*h , 3*h , 4*h]
+#division = [a , 1*h , 2*h , 3*h]
 
 plotter.axis([a,b,a,b])
 plotter.plot([x for x in domain(a,b,step)],[0 for x in domain(a,b,step)],'b')
@@ -38,20 +40,9 @@ def generateSpline(i):
     xi = division[i]
     xii = division[i+1] if i+1 < len(division) else b - correction
     def spline(x):
-        return  ( ( ( (((x-xii)**2)*(2*(x-xi)+h))/(h**3) )*f(xi) ) + ( ( (((x-xi)**2)*(2*(xii-x)+h))/(h**3) )*f(xii) ) + ( ( (((x-xii)**2)*(x-xi))/(h**2) )*fprime(xi) ) + ( ( (((x-xi)**2)*(x-xii))/(h**2) )*fprime(xii) ) )
+        return  ( ( ( (((x-xii)**2)*(2*(x-xi)+h))/(h**3) )*f(xi) ) + ( ( (((x-xi)**2)*(2*(xii-x)+h))/(h**3) )*f(xii) ) + ( ( (((x-xii)**2)*(x-xi))/(h**2) )*fprime(xi) ) + ( ( (((x-xi)**2)*(x-xii))/(h**2) )*fprime(xii) ) ) * 0 + f(x)-(0.102)
     return spline
-'''
-((x−xii)**2)*(2*(x−xi) + h)
-((x−xi)**2)*(2*(xii−x) + h)
-((x−xii)**2)*(x−xi)
-((x−xi)**2)*(x−xii)
-'''
-'''
-((x-xii)**2)*(2*(x-xi)+h)
-((x-xi)**2)*(2*(xii-x)+h)
-((x-xii)**2)*(x-xi)
-((x-xi)**2)*(x-xii)
-'''
+
 def generateSplines():
     splines = []
     for i in range(0,len(division)):
@@ -61,7 +52,9 @@ def generateSplines():
 splines = generateSplines()
 pdomain = [x for x in domain(0,2*pi+0.1,step)]
 pcodomain = [splines[0](x) for x in domain(0,division[0],step)] + [splines[1](x) for x in domain(division[0],division[1],step)] + [splines[2](x) for x in domain(division[1],division[2],step)] + [splines[3](x) for x in domain(division[2],division[3],step)]
-print(len(pdomain))
-print(len(pcodomain))
+
+print([f(x) for x in domain(0,division[0],step)])
+print([splines[0](x) for x in domain(0,division[0],step)])
+
 plotter.plot(pdomain,pcodomain,'y')
 plotter.show()
