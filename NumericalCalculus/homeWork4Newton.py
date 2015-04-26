@@ -8,6 +8,8 @@ def domain(start, stop, step):
         yield r
         r += step
 
+division = [real(-1/3),real(-1/5),real(-1/10),real(0),real(1/10),real(1/5),real(1/3)]
+
 def f (x):
     return 1/(1+100*(x**2))
 def deltaF (x,h):
@@ -29,19 +31,14 @@ def computeCurrentResult(currentPoint,currentPointIndex,points):
     return (f(currentPoint)/(reduce(lambda x, y: x*y, [(currentPoint-xi) for xi,xiindex in enumerate(points) if currentPointIndex != xiindex])))
 def nthOrderDivision(points):
     return sum( [ computeCurrentResult(currentPoint,currentPointIndex,points) for currentPoint,currentPointIndex in enumerate(points) ] )
-def applyDivisionFor(x,n,points):
-    return nthOrderDivision(points[:n]) * reduce(lambda total,xi: total*(x-xi), [xi for xi in points[:n]] )
 def newtonInterpolationPolynom(x,points):
-    result = f(x)
-    for n in range(1,len(points)+1):
-        result += applyDivisionFor(x,n,points)
+    result = f(x) + nthOrderDivision(points[:1])*(x-division[0]) + nthOrderDivision(points[:2])*(x-division[0])*(x-division[1]) + nthOrderDivision(points[:3])*(x-division[0])*(x-division[1])*(x-division[2]) + nthOrderDivision(points[:4])*(x-division[0])*(x-division[1])*(x-division[2])*(x-division[3]) + nthOrderDivision(points[:5])*(x-division[0])*(x-division[1])*(x-division[2])*(x-division[3])*(x-division[4]) + nthOrderDivision(points[:6])*(x-division[0])*(x-division[1])*(x-division[2])*(x-division[3])*(x-division[4])*(x-division[5])
 
 a = -2
 b = 2
 h = 1
 step = 10**(-1)
 
-division = [real(-1/3),real(-1/5),real(-1/10),real(0),real(1/10),real(1/5),real(1/3)]
 zeroOrderDivision = [f(x) for x in division]
 
 plotter.axis([a,b,a,b])
