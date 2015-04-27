@@ -1,0 +1,14 @@
+II.
+    Public:
+    p = 2579
+    alpha = 2
+    beta = 2400
+    Privat:
+    a = 123
+    Criptare:
+    1324 cu k = 853
+    N = 4 ( numarul de cifre a lui P )
+    e(1324,853) = (y1,y2)
+    Unde
+    y1 = 2^(853) % 2579 = 
+    y2 = 2400^(853) * 1324 % 2579

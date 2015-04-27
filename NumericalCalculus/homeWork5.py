@@ -93,10 +93,10 @@ Simpson(-1,1,function,(10**(-5)))
 Newton(-1,1,function,(10**(-5)))
 Bool(-1,1,function,(10**(-5)))
 
-print('--- >>> <<< ---')
+print('--- >>> Nu doar cu boole, separa in doua fisiere diferite. <<< ---')
 
 def integralFunction(x):
-    return (x**3)/(e**3 - 1)
+    return (x**3)/(e**x - 1)
 
 def otherFunction(x):
     return 3*(x**(-3))*Bool(0,x,integralFunction,(10**(-3)))
